@@ -6,18 +6,18 @@ import re
 from nltk.util import ngrams
 
 
-def tag_visible(element):
+def tag_visible(element) -> bool:
     if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
         return False
     return True
 
 
-def get_ngrams(words, n):
+def get_ngrams(words: list, n: int) -> list:
     n_grams = ngrams(words, n)
     return [' '.join(grams) for grams in n_grams]
 
 
-def counts(words):
+def counts(words: list) -> dict:
     # Create a PorterStemmer object
     stemmer = PorterStemmer()
 
@@ -57,7 +57,7 @@ def counts(words):
             }
 
 
-def page_analyzer(soup):
+def page_analyzer(soup) -> dict:
     # Parse the HTML content using BeautifulSoup
     h1 = soup.find('h1').text.strip()
     h2 = soup.find(['h2', 'h3']).text.strip()
@@ -77,7 +77,7 @@ def page_analyzer(soup):
     return {**counters, **rs}
 
 
-def stats_to_text(stats):
+def stats_to_text(stats: dict) -> str:
     return f"""
         <b>Heading 1</b>: {stats["h1"]}<br>
         <b>Heading 2</b>: {stats["h2"]}<br>
@@ -88,7 +88,7 @@ def stats_to_text(stats):
         """
 
 
-def profile_to_text(data, aggregated_stats):
+def profile_to_text(data: dict, aggregated_stats: dict) -> str:
     return f"""
         <b>Articles</b>: {len(data["articles"])} ({len(aggregated_stats["words"])} words) <br>
         <b>Followers</b>: {data["user"]["info"]["followers_count"]} <br><br>

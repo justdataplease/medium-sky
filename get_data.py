@@ -22,7 +22,7 @@ EXCLUDE_URLS = 'unsplash|shutterstock|freepi|\.png|\.jpeg|\.gif|\.jpg'
 
 API_URL = "https://medium2.p.rapidapi.com"
 
-headers = {
+HEADERS = {
     "X-RapidAPI-Key": os.environ.get('RAPID_API'),
     "X-RapidAPI-Host": "medium2.p.rapidapi.com"
 }
@@ -61,7 +61,7 @@ def get_user_id_unofficial(user: str) -> dict:
     Unofficial method to get user info
     """
     user_url = f"https://medium.com/@{user}"
-    response = requests.get(user_url, headers=headers)
+    response = requests.get(user_url, headers=HEADERS)
     soup = bs4.BeautifulSoup(response.content, features="lxml")
     preload_state = load_js_state(soup, state='window.__PRELOADED_STATE__')
     user_id = preload_state['client']['routingEntity']['id']
@@ -104,7 +104,7 @@ def get_user_id(user: str) -> str:
     Get user_id using Medium API
     """
     url = f"{API_URL}/user/id_for/{user}"
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=HEADERS)
     response.json()
     user_id = response.json()["id"]
     return user_id
@@ -115,7 +115,7 @@ def get_user_info(user_id: str) -> dict:
     Get user_info using Medium API
     """
     url = f"{API_URL}/user/{user_id}"
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=HEADERS)
     return response.json()
 
 
@@ -124,7 +124,7 @@ def get_user_articles(user_id: str) -> list:
     Get user article_ids using Medium API
     """
     url = f"{API_URL}/user/{user_id}/articles"
-    response = requests.request("GET", url, headers=headers)
+    response = requests.request("GET", url, headers=HEADERS)
     articles = response.json()['associated_articles']
     return articles
 
@@ -134,7 +134,7 @@ def get_article_markdown(article_id: str) -> str:
     Get article markdown using Medium API
     """
     url = f"{API_URL}/article/{article_id}/markdown"
-    response = requests.request("GET", url, headers=headers)
+    response = requests.request("GET", url, headers=HEADERS)
     return response.json()["markdown"]
 
 
@@ -159,7 +159,7 @@ class MediumArticles:
         self.articles_limit = articles_limit
         self.reset = reset
 
-    def get_all_articles(self):
+    def get_all_articles(self) -> dict:
         """
         Get all user's articles and analyze them.
         If pickle file with data exists use the file else use the API (except the case you specify reset=True).

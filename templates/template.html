@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Knowledge Graph with Hyperlinks, Descriptions, and Info Panel</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #2e4482;
+        }
+
+        #mynetwork {
+            width: calc(100% - 200px);
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #infopanel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100%;
+            padding: 10px;
+            overflow: auto;
+            background-color: #ffffff;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #infopanel a {
+            color: #2B7CE9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #infopanel a:hover {
+            text-decoration: underline;
+        }
+
+        #graphpanel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: calc(100% - 200px);
+            height: 100%;
+            box-sizing: border-box;
+            background-color: #f5f5f5;
+        }
+
+        #profile {
+            border-radius: 50%;
+            width: 30%;
+            height: auto;
+        }
+
+        .al {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+<div id="graphpanel">
+    <div id="mynetwork"></div>
+</div>
+<div id="infopanel"></div>
+<script type="text/javascript">
+    var data = {{data | tojson}};
+    var nodes = new vis.DataSet(data.nodes)
+    var edges = new vis.DataSet(data.edges)
+    var data = {nodes: nodes, edges: edges};
+
+    // create a network
+    var container = document.getElementById("mynetwork");
+    var options = {
+        nodes: {
+            font: {size: 18},
+            color: "#ffffff",
+            borderWidth: 2,
+        },
+        edges: {
+            width: 2,
+        }
+    };
+
+    {% if not isolate_articles%}
+    options["physics"] = {
+            barnesHut: {
+                gravitationalConstant: -8000,
+                centralGravity: 0.1,
+                springLength: 100,
+                avoidOverlap: 0.9,
+                nodeDistance: 150
+            }};
+    {% endif %}
+
+    var network = new vis.Network(container, data, options);
+
+    // add hyperlink and info panel to nodes
+    document.getElementById('infopanel').innerHTML = '<h1 class="al">Explore <a href="https://medium.com/@{{user}}" style="color: blue;">{{user}}\'s</a> Medium.com sky &#128640;</h1>';
+    document.getElementById('infopanel').innerHTML += '<div class="al"><img id="profile" src="{{user_image}}"</img></div>';
+    document.getElementById('infopanel').innerHTML += `<br>{{user_profile|safe}}`;
+
+    network.on("click", function (params) {
+        if (params.nodes.length === 1) {
+            var node = nodes.get(params.nodes[0]);
+            if (node && node.url) {
+                var container = document.getElementById('infopanel');
+                container.innerHTML = '';
+
+                if (node.main_title != undefined) {
+                    container.innerHTML += '<h3>' + node.main_title + '</h3>'
+                    container.innerHTML += '<a href="' + node.url + '">' + node.url + '</a>';
+
+                    container.innerHTML += '<h3>&mdash; Word Analysis &mdash; </h3>'
+                    container.innerHTML += node.stats
+                } else {
+                    container.innerHTML += "<p>Domain &mdash; " + '<a href="https://' + node.domain + '">' + node.domain + "</a></p><br>";
+                }
+                ;
+
+
+                container.innerHTML += "<h3>&mdash; Urls &mdash;</h3>"
+
+                container.innerHTML += '<ol type="1">'
+
+                for (var i = 0; i < node.urls.length; i++) {
+                    let x = node.urls[i].split('|')
+                    container.innerHTML += '<li>Title : ' + x[0];
+                    container.innerHTML += '<a href="' + x[1] + '">' + x[1] + '</a></li><br>';
+                }
+                container.innerHTML += "</ol>";
+
+
+            } else {
+                document.getElementById("infopanel").innerHTML = "";
+            }
+        }
+    });
+
+</script>
+
+</body>
+</html>

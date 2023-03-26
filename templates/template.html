@@ -107,7 +107,7 @@
     document.getElementById('infopanel').innerHTML += `<br>{{user_profile|safe}}`;
 
     document.getElementById('infopanel').innerHTML += '<div class="al"><h3>&mdash; Description &mdash;</h3></div>';
-    document.getElementById('infopanel').innerHTML += `<div><p>This is an analysis of Medium.com articles. The analysis includes the use of knowledge graphs to display the relationships between the articles and the url link domains referenced within them. Articles are represented by stars and url link domains by circles. Additionally, NLP techniques such as stemming and frequency analysis were utilized to identify the most commonly used words in the articles and gain a better understanding of their content.</p></div>`;
+    document.getElementById('infopanel').innerHTML += `<div><p>This is an analysis of Medium.com articles. The analysis includes the use of knowledge graphs to display the relationships between the articles and the external website domains referenced within them. Articles are represented by stars and external website domains by circles. Additionally, NLP techniques such as stemming and frequency analysis were utilized to identify the most commonly used words in the articles and gain a better understanding of their content.</p></div>`;
 
     network.on("click", function (params) {
         if (params.nodes.length === 1) {

@@ -199,7 +199,7 @@ class MediumArticles:
                      }
                 )
                 if self.articles_limit:
-                    if main_counter > self.articles_limit:
+                    if main_counter >= self.articles_limit:
                         break
                 main_counter += 1
 

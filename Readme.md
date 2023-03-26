@@ -2,6 +2,8 @@
 
 We will create an HTML app to explore the content of each article, as well as the relationship between the articles and their referenced external website domains.
 
+Checkout [demo](https://justdataplease.com/db/medium-articles-analysis.html) (version 1) or [demo](https://justdataplease.com/db/medium-articles-analysis-2.html) (version 2)
+
 To replicate, you need to do the following actions
 
 1) You need to subscribe to medium.com api [rapidapi](https://rapidapi.com/nishujain199719-vgIfuFHZxVZ/api/medium2) (you get 150 requests per month for free - this app will work for free if you have less than 148 articles)

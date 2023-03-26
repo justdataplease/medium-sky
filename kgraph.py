@@ -125,7 +125,9 @@ if __name__ == "__main__":
     with open('templates/template.html') as file:
         template = Template(file.read())
 
-    with open('output.html', 'w') as file:
+    output_file_name = f'output/{args.username.replace(".", "_")}_{"i" if args.isolate else "m"}.html'
+
+    with open(output_file_name, 'w') as file:
         file.write(
             template.render(data=dataset, user=args.username,
                             user_image=dataset["user_image"],

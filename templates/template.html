@@ -92,11 +92,10 @@
     {% if not isolate_articles%}
     options["physics"] = {
             barnesHut: {
-                gravitationalConstant: -8000,
-                centralGravity: 0.1,
+                gravitationalConstant: -10000,
                 springLength: 100,
                 avoidOverlap: 0.9,
-                nodeDistance: 150
+                nodeDistance: 500
             }};
     {% endif %}
 

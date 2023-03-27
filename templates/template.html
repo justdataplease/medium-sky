@@ -54,7 +54,7 @@
         }
 
         #profile {
-            border-radius: 50%;
+            border-radius: 1vh;
             width: 30%;
             height: auto;
         }
@@ -90,13 +90,13 @@
     };
 
     {% if not isolate_articles%}
-    options["physics"] = {
-            barnesHut: {
-                gravitationalConstant: -10000,
-                springLength: 100,
-                avoidOverlap: 0.9,
-                nodeDistance: 500
-            }};
+    {#options["physics"] = {#}
+    {#        barnesHut: {#}
+    {#            gravitationalConstant: -10000,#}
+    {#            springLength: 100,#}
+    {#            avoidOverlap: 0.9,#}
+    {#            nodeDistance: 500#}
+    {#        }};#}
     {% endif %}
 
     var network = new vis.Network(container, data, options);

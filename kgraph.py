@@ -45,7 +45,8 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
         article["counter"] = main_counter
 
     connections = []
-    counter = 100000
+    external_domain_counter_init = 100000
+    counter = external_domain_counter_init
     already_found_index = {}
 
     for article in articles:

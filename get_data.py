@@ -226,6 +226,7 @@ class MediumArticles:
         self.voter_count = 0
         self.publication = []
         self.published_at = []
+        self.article_length_cat = []
 
     def get_all_articles(self) -> dict:
         """
@@ -287,6 +288,7 @@ class MediumArticles:
             self.user_words.extend(stats["words"])
             self.clap_count += article_content["clap_count"]
             self.voter_count += article_content["voter_count"]
+            self.article_length_cat.append(stats["words_num_cat"])
             self.publication.append(article_content["publisher_name"])
             self.published_at.append(article_content["published_at"])
 
@@ -295,7 +297,8 @@ class MediumArticles:
             "clap_count": self.clap_count,
             "voter_count": self.voter_count,
             "publication": self.publication,
-            "published_at": self.published_at
+            "published_at": self.published_at,
+            "article_length_cat": self.article_length_cat
         }
 
         aggs = counts(self.user_words)

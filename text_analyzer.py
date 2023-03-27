@@ -50,10 +50,22 @@ def counts(words: list) -> dict:
     # Find most frequent trigrams
     most_common_trigrams = trigram_counts.most_common(5)
 
+    # Get article type
+    if len(stemmed_words) < 300:
+        words_num_cat = "very short"
+    elif len(stemmed_words) < 600:
+        words_num_cat = "short"
+    elif len(stemmed_words) < 1200:
+        words_num_cat = "medium"
+    elif len(stemmed_words) < 2000:
+        words_num_cat = "large"
+    elif len(stemmed_words) > 2000:
+        words_num_cat = "very large"
+
     return {"words": stemmed_words, "word_counts": word_counts, "most_common_words": most_common_words,
             "bigrams": bigrams, "bigram_counts": bigram_counts, "most_common_bigrams": most_common_bigrams,
             "trigrams": bigrams, "trigram_counts": bigram_counts, "most_common_trigrams": most_common_trigrams,
-            "words_num_all": len(words), "words_num": len(stemmed_words)
+            "words_num_all": len(words), "words_num": len(stemmed_words), "words_num_cat": words_num_cat
             }
 
 
@@ -97,7 +109,9 @@ def stats_to_text(stats: dict, other_stats: dict) -> str:
         <b>Claps per Person</b>: {round(safe_div(other_stats["clap_count"], other_stats["voter_count"]), 1)} ({other_stats["voter_count"]} / {other_stats["clap_count"]})<br>
         <b>Responses</b>: {other_stats["post_responses"]}<br>
         <br>
-        <b>Word Count (Stemmed)</b>: {stats["words_num"]}<br>
+        <b>Word Count (All)</b>: {stats["words_num_all"]}<br>
+        <b>Word Count (Stemmed)</b>: {stats["words_num"]} ({stats["words_num_cat"]})<br>
+        
         <b>Most Common Words</b>:<br> {counter_to_text(stats["most_common_words"])}<br><br>
         <b>Most Common Bigrams</b>:<br> {counter_to_text(stats["most_common_bigrams"])}<br><br>
         <b>Most Common Trigrams</b>:<br> {counter_to_text(stats["most_common_trigrams"])}<br><br>
@@ -105,6 +119,7 @@ def stats_to_text(stats: dict, other_stats: dict) -> str:
 
 
 def profile_to_text(data: dict, aggregated_stats: dict, other_profile_stats: dict) -> str:
+    article_length_cat = Counter(other_profile_stats['article_length_cat']).most_common(3)
     publication_count = Counter(other_profile_stats['publication']).most_common(10)
     published_time_period_count = Counter([f"{x['time_period'][0]}-{x['time_period'][1]}" for x in other_profile_stats["published_at"]]).most_common(10)
     followers = data["user"]["info"]["followers_count"]
@@ -115,9 +130,10 @@ def profile_to_text(data: dict, aggregated_stats: dict, other_profile_stats: dic
         <b>Voters / Followers</b>: {round(safe_div(other_profile_stats["voter_count"], followers) * 100, 1)}% ({other_profile_stats["voter_count"]} / {followers})<br>
         <b>Claps per Person</b>: {round(safe_div(other_profile_stats["clap_count"], other_profile_stats["voter_count"]), 1)} ({other_profile_stats["clap_count"]} / {other_profile_stats["voter_count"]})<br>
         <b>Preferred Published Time</b>: {counter_to_text(published_time_period_count)} <br>
+        <b>Preferred Article Length</b>: {counter_to_text(article_length_cat)} <br>
 
         <br>
-        <b>Most Common Words</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in aggregated_stats["most_common_words"]])}<br><br>
-        <b>Most Common Bigrams</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in aggregated_stats["most_common_bigrams"]])}<br><br>
-        <b>Most Common Trigrams</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in aggregated_stats["most_common_trigrams"]])}<br><br>
+        <b>Most Common Words</b>:<br> {counter_to_text(aggregated_stats["most_common_words"])}<br><br>
+        <b>Most Common Bigrams</b>:<br> {counter_to_text(aggregated_stats["most_common_bigrams"])}<br><br>
+        <b>Most Common Trigrams</b>:<br> {counter_to_text(aggregated_stats["most_common_trigrams"])}<br><br>
         """

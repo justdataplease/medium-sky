@@ -77,11 +77,15 @@ def page_analyzer(soup) -> dict:
     return {**counters, **rs}
 
 
-def safe_div(x, y):
+def safe_div(x: int, y: int) -> float:
     try:
         return x / y
     except ZeroDivisionError:
         return 0
+
+
+def counter_to_text(lst: list) -> str:
+    return ", ".join([f"{x[0]}({x[1]})" for x in lst])
 
 
 def stats_to_text(stats: dict, other_stats: dict) -> str:
@@ -94,17 +98,24 @@ def stats_to_text(stats: dict, other_stats: dict) -> str:
         <b>Responses</b>: {other_stats["post_responses"]}<br>
         <br>
         <b>Word Count (Stemmed)</b>: {stats["words_num"]}<br>
-        <b>Most Common Words</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in stats["most_common_words"]])}<br><br>
-        <b>Most Common Bigrams</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in stats["most_common_bigrams"]])}<br><br>
-        <b>Most Common Trigrams</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in stats["most_common_trigrams"]])}<br><br>
+        <b>Most Common Words</b>:<br> {counter_to_text(stats["most_common_words"])}<br><br>
+        <b>Most Common Bigrams</b>:<br> {counter_to_text(stats["most_common_bigrams"])}<br><br>
+        <b>Most Common Trigrams</b>:<br> {counter_to_text(stats["most_common_trigrams"])}<br><br>
         """
 
 
 def profile_to_text(data: dict, aggregated_stats: dict, other_profile_stats: dict) -> str:
+    publication_count = Counter(other_profile_stats['publication']).most_common(10)
+    published_time_period_count = Counter([f"{x['time_period'][0]}-{x['time_period'][1]}" for x in other_profile_stats["published_at"]]).most_common(10)
+    followers = data["user"]["info"]["followers_count"]
     return f"""
         <b>Articles</b>: {len(data["articles"])} ({len(aggregated_stats["words"])} words) <br>
-        <b>Followers</b>: {data["user"]["info"]["followers_count"]} <br>
-        <b>Claps per Person</b>: {round(safe_div(other_profile_stats["clap_count"], other_profile_stats["voter_count"]), 1)} ({other_profile_stats["voter_count"]} / {other_profile_stats["clap_count"]})<br>
+        <b>Publications</b>: {counter_to_text(publication_count)} <br>
+        <b>Followers</b>: {followers} <br>
+        <b>Voters / Followers</b>: {round(safe_div(other_profile_stats["voter_count"], followers) * 100, 1)}% ({other_profile_stats["voter_count"]} / {followers})<br>
+        <b>Claps per Person</b>: {round(safe_div(other_profile_stats["clap_count"], other_profile_stats["voter_count"]), 1)} ({other_profile_stats["clap_count"]} / {other_profile_stats["voter_count"]})<br>
+        <b>Preferred Published Time</b>: {counter_to_text(published_time_period_count)} <br>
+
         <br>
         <b>Most Common Words</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in aggregated_stats["most_common_words"]])}<br><br>
         <b>Most Common Bigrams</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in aggregated_stats["most_common_bigrams"]])}<br><br>

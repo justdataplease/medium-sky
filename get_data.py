@@ -11,6 +11,7 @@ from subprocess import check_output
 import json
 import validators
 from datetime import datetime
+from collections import Counter
 
 # load environment variables from .env file
 load_dotenv()
@@ -223,6 +224,8 @@ class MediumArticles:
         self.reset = reset
         self.clap_count = 0
         self.voter_count = 0
+        self.publication = []
+        self.published_at = []
 
     def get_all_articles(self) -> dict:
         """
@@ -284,11 +287,15 @@ class MediumArticles:
             self.user_words.extend(stats["words"])
             self.clap_count += article_content["clap_count"]
             self.voter_count += article_content["voter_count"]
+            self.publication.append(article_content["publisher_name"])
+            self.published_at.append(article_content["published_at"])
 
         # Aggregate Statistics
         other_profile_stats = {
             "clap_count": self.clap_count,
             "voter_count": self.voter_count,
+            "publication": self.publication,
+            "published_at": self.published_at
         }
 
         aggs = counts(self.user_words)

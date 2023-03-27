@@ -19,7 +19,7 @@ def trim_url(url: str) -> str:
     return url_last
 
 
-def rescale(numbers: list, scale: tuple = (30, 100)) -> dict:
+def rescale(numbers: list, scale: tuple = (20, 70)) -> dict:
     min_value = min(numbers)
     max_value = max(numbers)
     new_min, new_max = scale

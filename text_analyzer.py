@@ -77,21 +77,35 @@ def page_analyzer(soup) -> dict:
     return {**counters, **rs}
 
 
-def stats_to_text(stats: dict) -> str:
+def safe_div(x, y):
+    try:
+        return x / y
+    except ZeroDivisionError:
+        return 0
+
+
+def stats_to_text(stats: dict, other_stats: dict) -> str:
     return f"""
         <b>Heading 1</b>: {stats["h1"]}<br>
         <b>Heading 2</b>: {stats["h2"]}<br>
-        <b>Word Count (Stemmed)</b>: {stats["words_num"]}<br><br>
+        <br>
+        <b>Published At</b>: {str(other_stats["published_at"]["date"])} {other_stats["published_at"]["time_period"]}<br>
+        <b>Claps per Person</b>: {round(safe_div(other_stats["clap_count"], other_stats["voter_count"]), 1)} ({other_stats["voter_count"]} / {other_stats["clap_count"]})<br>
+        <b>Responses</b>: {other_stats["post_responses"]}<br>
+        <br>
+        <b>Word Count (Stemmed)</b>: {stats["words_num"]}<br>
         <b>Most Common Words</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in stats["most_common_words"]])}<br><br>
         <b>Most Common Bigrams</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in stats["most_common_bigrams"]])}<br><br>
         <b>Most Common Trigrams</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in stats["most_common_trigrams"]])}<br><br>
         """
 
 
-def profile_to_text(data: dict, aggregated_stats: dict) -> str:
+def profile_to_text(data: dict, aggregated_stats: dict, other_profile_stats: dict) -> str:
     return f"""
         <b>Articles</b>: {len(data["articles"])} ({len(aggregated_stats["words"])} words) <br>
-        <b>Followers</b>: {data["user"]["info"]["followers_count"]} <br><br>
+        <b>Followers</b>: {data["user"]["info"]["followers_count"]} <br>
+        <b>Claps per Person</b>: {round(safe_div(other_profile_stats["clap_count"], other_profile_stats["voter_count"]), 1)} ({other_profile_stats["voter_count"]} / {other_profile_stats["clap_count"]})<br>
+        <br>
         <b>Most Common Words</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in aggregated_stats["most_common_words"]])}<br><br>
         <b>Most Common Bigrams</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in aggregated_stats["most_common_bigrams"]])}<br><br>
         <b>Most Common Trigrams</b>:<br> {", ".join([f"{x[0]}({x[1]})" for x in aggregated_stats["most_common_trigrams"]])}<br><br>

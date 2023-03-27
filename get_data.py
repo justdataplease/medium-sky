@@ -10,6 +10,7 @@ import os
 from subprocess import check_output
 import json
 import validators
+from datetime import datetime
 
 # load environment variables from .env file
 load_dotenv()
@@ -28,15 +29,50 @@ HEADERS = {
 }
 
 
+def get_ld_json(soup) -> dict:
+    return json.loads("".join(soup.find("script", {"type": "application/ld+json"}).contents))
+
+
+def get_timestamp(timestamp):
+    if not timestamp:
+        return {"date": None, "time": None, "time_period": None}
+
+    date_format = "%Y-%m-%dT%H:%M:%S.%fZ"
+
+    parsed_date = datetime.strptime(timestamp, date_format)
+    date = parsed_date.date()
+    time = parsed_date.time()
+
+    if time.hour < 5:
+        time_period = ("night", "early")
+    elif time.hour < 8:
+        time_period = ("night", "late")
+    elif time.hour < 12:
+        time_period = ("morning", "morning")
+    elif time.hour < 15:
+        time_period = ("afternoon", "early")
+    elif time.hour < 18:
+        time_period = ("afternoon", "late")
+    elif time.hour < 21:
+        time_period = ("evening", "early")
+    else:
+        time_period = ("evening", "late")
+
+    return {"date": date, "time": time, "time_period": time_period}
+
+
 def find_md_links(md: str) -> list:
     """ Return dict of links in markdown """
+    links = []
+    try:
+        links = list(INLINE_LINK_RE.findall(md))
+        footnote_links = dict(FOOTNOTE_LINK_TEXT_RE.findall(md))
+        footnote_urls = dict(FOOTNOTE_LINK_URL_RE.findall(md))
 
-    links = list(INLINE_LINK_RE.findall(md))
-    footnote_links = dict(FOOTNOTE_LINK_TEXT_RE.findall(md))
-    footnote_urls = dict(FOOTNOTE_LINK_URL_RE.findall(md))
-
-    for key in footnote_links.keys():
-        links.append((footnote_links[key], footnote_urls[footnote_links[key]]))
+        for key in footnote_links.keys():
+            links.append((footnote_links[key], footnote_urls[footnote_links[key]]))
+    except Exception as exc:
+        print(f"ERROR: {exc}")
 
     return links
 
@@ -70,14 +106,49 @@ def get_user_id_unofficial(user: str) -> dict:
     return {"user_id": user_id, "social_stats": social_stats}
 
 
-def get_article_markdown_unofficial(url: str) -> list:
+@backoff.on_exception(backoff.expo,
+                      requests.exceptions.RequestException,
+                      max_tries=3,
+                      jitter=None)
+def get_article_stats(url: str) -> list:
+    """
+    Unofficial method to get article stats.
+    """
+    article_response = requests.get(url)
+    soup = bs4.BeautifulSoup(article_response.content, features="lxml")
+
+    ld = get_ld_json(soup)
+    preload_state = load_js_state(soup, state='window.__APOLLO_STATE__')
+
+    article_id = ld.get("identifier", "")
+    post_stats = preload_state[f'Post:{article_id}']
+
+    # Get info
+    info = {
+        "url": article_response.url,
+        "clap_count": post_stats.get("clapCount", 0),
+        "voter_count": post_stats.get("voterCount", 0),
+        "post_responses": post_stats.get("postResponses", {}).get("count", 0),
+        "created_at": get_timestamp(ld.get("dateCreated")),
+        "published_at": get_timestamp(ld.get("datePublished")),
+        "modified_at": get_timestamp(ld.get("dateModified")),
+        "name": ld.get("name", ""),
+        "identifier": ld.get("identifier", ""),
+        "publisher_name": ld.get("publisher", {}).get("name", ""),
+        "publisher_url": ld.get("publisher", {}).get("url", ""),
+        "isAccessibleForFree": ld.get("isAccessibleForFree", True)
+    }
+    return info
+
+
+def get_article_content_unofficial(url: str) -> list:
     """
     Unofficial method to get article markdown. Only works with articles without a paywall
     """
-
     rs = []
     article_response = requests.get(url)
     soup = bs4.BeautifulSoup(article_response.content, features="lxml")
+
     preload_state = load_js_state(soup, state='window.__APOLLO_STATE__')
 
     # iterate over each key in the __APOLLO_STATE__ object and extract the markups and text
@@ -138,14 +209,6 @@ def get_article_markdown(article_id: str) -> str:
     return response.json()["markdown"]
 
 
-@backoff.on_exception(backoff.expo,
-                      requests.exceptions.RequestException,
-                      max_tries=3,
-                      jitter=None)
-def get_article_url(url: str) -> str:
-    return requests.get(url).url
-
-
 def get_article_content(article_id: str) -> dict:
     markdown_text = get_article_markdown(article_id)
     links = find_md_links(markdown_text)
@@ -158,6 +221,8 @@ class MediumArticles:
         self.user_words = []
         self.articles_limit = articles_limit
         self.reset = reset
+        self.clap_count = 0
+        self.voter_count = 0
 
     def get_all_articles(self) -> dict:
         """
@@ -190,14 +255,16 @@ class MediumArticles:
             for article_id in article_ids:
                 print(f"getting article {article_id}...")
                 article_content = get_article_content(article_id)
-                article_url = get_article_url(f"https://{user_id}.medium.com/{article_id}")
-                data_to_keep["articles"].append(
-                    {"id": article_id,
-                     "url": article_url,
-                     "links": article_content["links"],
-                     "markdown": article_content["markdown_text"]
-                     }
-                )
+                article_stats = get_article_stats(f"https://{user_id}.medium.com/{article_id}")
+
+                article_main = {
+                    "id": article_id,
+                    "links": article_content["links"],
+                    "markdown": article_content["markdown_text"]
+                }
+
+                data_to_keep["articles"].append({**article_main, **article_stats})
+
                 if self.articles_limit:
                     if main_counter >= self.articles_limit:
                         break
@@ -212,11 +279,18 @@ class MediumArticles:
             soup = bs4.BeautifulSoup(html, features="lxml")
             stats = page_analyzer(soup)
             article_content["stats_dict"] = stats
-            article_content["stats"] = stats_to_text(stats)
+            article_content["stats"] = stats_to_text(stats, other_stats=article_content)
 
             self.user_words.extend(stats["words"])
+            self.clap_count += article_content["clap_count"]
+            self.voter_count += article_content["voter_count"]
 
         # Aggregate Statistics
+        other_profile_stats = {
+            "clap_count": self.clap_count,
+            "voter_count": self.voter_count,
+        }
+
         aggs = counts(self.user_words)
-        data_to_keep["user"]["profile"] = profile_to_text(data_to_keep, aggs)
+        data_to_keep["user"]["profile"] = profile_to_text(data_to_keep, aggs, other_profile_stats)
         return data_to_keep

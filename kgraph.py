@@ -63,11 +63,11 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
         article["counter"] = main_counter
 
     connections = []
-    external_domain_counter_init = 100000
-    counter = external_domain_counter_init
+    # Ids of external website domain nodes will start from 100000 (articles ids start from 1)
+    counter = 100000
     already_found_index = {}
 
-    # Create nodes for external website domains and connections between them and articles
+    # Create nodes for external website domains and connections between them and the articles
     for article in articles:
         if isolate_articles:
             already_found_index = {}
@@ -86,6 +86,7 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
             description_url = (text or "") + "|" + (href or "")
 
             if href:
+                # Check if it is a valid url else do not bother
                 if validators.url(href) and not re.search(EXCLUDE_URLS, href):
 
                     found_main_article = article_index.get(trimmed_href)

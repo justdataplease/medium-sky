@@ -51,15 +51,15 @@ def counts(words: list) -> dict:
     most_common_trigrams = trigram_counts.most_common(5)
 
     # Get article type
-    if len(stemmed_words) < 300:
-        words_num_cat = "very short"
-    elif len(stemmed_words) < 600:
+    if len(stemmed_words) < 100:
         words_num_cat = "short"
-    elif len(stemmed_words) < 1200:
+    elif len(stemmed_words) < 500:
+        words_num_cat = "normal"
+    elif len(stemmed_words) < 1000:
         words_num_cat = "medium"
-    elif len(stemmed_words) < 2000:
+    elif len(stemmed_words) < 1800:
         words_num_cat = "large"
-    elif len(stemmed_words) > 2000:
+    elif len(stemmed_words) > 1800:
         words_num_cat = "very large"
 
     return {"words": stemmed_words, "word_counts": word_counts, "most_common_words": most_common_words,
@@ -100,6 +100,24 @@ def counter_to_text(lst: list) -> str:
     return ", ".join([f"{x[0]}({x[1]})" for x in lst])
 
 
+def find_dates_frequency(dates: list) -> float:
+    # Sort the list of dates in ascending order
+    dates.sort()
+
+    # Calculate the frequency of each interval
+    freq = []
+    for i in range(len(dates) - 1):
+        interval = dates[i + 1] - dates[i]
+        freq.append(interval.days)
+
+    # Calculate the average frequency
+    avg_freq = sum(freq) / len(freq)
+    min_date = str(max(dates))
+    max_date = str(min(dates))
+
+    return avg_freq, max_date, min_date
+
+
 def stats_to_text(stats: dict, other_stats: dict) -> str:
     return f"""
         <b>Heading 1</b>: {stats["h1"]}<br>
@@ -121,8 +139,10 @@ def stats_to_text(stats: dict, other_stats: dict) -> str:
 def profile_to_text(data: dict, aggregated_stats: dict, other_profile_stats: dict) -> str:
     article_length_cat = Counter(other_profile_stats['article_length_cat']).most_common(3)
     publication_count = Counter(other_profile_stats['publication']).most_common(10)
+    published_frequency = find_dates_frequency([x['date'] for x in other_profile_stats["published_at"]])
     published_time_period_count = Counter([f"{x['time_period'][0]}-{x['time_period'][1]}" for x in other_profile_stats["published_at"]]).most_common(10)
     followers = data["user"]["info"]["followers_count"]
+
     return f"""
         <b>Articles</b>: {len(data["articles"])} ({len(aggregated_stats["words"])} words) <br>
         <b>Publications</b>: {counter_to_text(publication_count)} <br>
@@ -131,6 +151,7 @@ def profile_to_text(data: dict, aggregated_stats: dict, other_profile_stats: dic
         <b>Claps per Person</b>: {round(safe_div(other_profile_stats["clap_count"], other_profile_stats["voter_count"]), 1)} ({other_profile_stats["clap_count"]} / {other_profile_stats["voter_count"]})<br>
         <b>Preferred Published Time</b>: {counter_to_text(published_time_period_count)} <br>
         <b>Preferred Article Length</b>: {counter_to_text(article_length_cat)} <br>
+        <b>Published frequency (AVG)</b>: per {round(published_frequency[0], 1)} days ({published_frequency[1]}/{published_frequency[2]}) <br>
 
         <br>
         <b>Most Common Words</b>:<br> {counter_to_text(aggregated_stats["most_common_words"])}<br><br>

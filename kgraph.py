@@ -19,6 +19,19 @@ def trim_url(url: str) -> str:
     return url_last
 
 
+def rescale(numbers: list, scale: tuple = (30, 100)) -> dict:
+    min_value = min(numbers)
+    max_value = max(numbers)
+    new_min, new_max = scale
+
+    scaled_numbers = {}
+    for number in numbers:
+        scaled_number = ((number - min_value) / (max_value - min_value)) * (new_max - new_min) + new_min
+        scaled_numbers[number] = scaled_number
+
+    return scaled_numbers
+
+
 def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10, reset: bool = False) -> dict:
     a = MediumArticles(username=user, articles_limit=articles_limit, reset=reset)
     articles_dict = a.get_all_articles()
@@ -31,13 +44,18 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
     article_index = {}
     dataset = {}
 
-    # iterate over each article element in the page
+    # Find size of article shape
+    voter_count_list = [s["voter_count"] for s in articles]
+    voter_count_rescaled_index = rescale(voter_count_list)
+
+    # Create nodes for articles
     for article in articles:
         main_counter += 1
         url = article['url']
         stats_dict = article['stats_dict']
         trimmed_url = trim_url(url)
-        ar = {"id": main_counter, "shape": "star", "color": "#fdfd96", "label": stats_dict['h1'][0:20], "main_title": stats_dict['h1'], "size": 30, "url": url,
+        ar = {"id": main_counter, "shape": "star", "color": "#fdfd96", "label": stats_dict['h1'][0:20], "main_title": stats_dict['h1'],
+              "size": voter_count_rescaled_index[article["voter_count"]], "url": url,
               "domain": url,
               "description": stats_dict['h2'], "urls": [], "main": 1, "counter": 1, "font": {"color": "#000000", "size": 20}}
         article_index[trimmed_url] = main_counter
@@ -49,11 +67,11 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
     counter = external_domain_counter_init
     already_found_index = {}
 
+    # Create nodes for external website domains and connections between them and articles
     for article in articles:
         if isolate_articles:
             already_found_index = {}
 
-        stats_dict = article['stats_dict']
         stats_text = article['stats']
         article_id = article['counter']
 
@@ -63,14 +81,15 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
             text = link[0]
             href = link[1]
 
-            raw_href = trim_url(href)
+            trimmed_href = trim_url(href)
             domain = urlparse(href).netloc
             description_url = (text or "") + "|" + (href or "")
 
             if href:
                 if validators.url(href) and not re.search(EXCLUDE_URLS, href):
 
-                    found_main_article = article_index.get(raw_href)
+                    found_main_article = article_index.get(trimmed_href)
+                    # If this is an external website domain (dot)
                     if not found_main_article:
                         if already_found_index.get(domain):
                             id = already_found_index[domain]
@@ -79,6 +98,7 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
                                 dataset[id]["size"] += 2
                             dataset[id]["urls"] = list(set(dataset[id]["urls"] + [description_url]))
                             dataset[id]["label"] = dataset[id]["label"].split("|")[0] + "|" + str(dataset[id]["counter"])
+
                             if isolate_articles:
                                 continue
                         else:
@@ -87,7 +107,10 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
                             dataset[id] = {"id": id, "shape": "dot", "url": domain, "domain": domain, "size": 10, "label": domain.replace("www.", ""),
                                            "description": text,
                                            "main": 0, "urls": [description_url], "counter": 1}
+
+                        already_found_index[domain] = id
                     else:
+                        # If this is a main article (star)
                         id = found_main_article
 
                     connections_color = '#A7C7E7' if found_main_article else '#dbd7d7'
@@ -96,11 +119,12 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
                                        "color": {"color": connections_color, "highlight": highlight_color}}
                     connection_edge_tuple = (id, article_id)
 
+                    # All connections
                     connection_tuples = [(x["from"], x["to"]) for x in connections] + [(x["to"], x["from"]) for x in connections]
 
+                    # If there is already a connection do not recreate
                     if (connection_edge_tuple not in connection_tuples) and (article_id != id):
                         connections.append(connection_edge)
-                    already_found_index[domain] = id
 
     return {"nodes": list(dataset.values()), "edges": connections,
             "user_profile": user["profile"],

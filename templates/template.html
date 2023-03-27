@@ -86,17 +86,22 @@
         },
         edges: {
             width: 2,
-        }
+        },
+        layout: {
+            improvedLayout: false,
+            randomSeed: 191006
+        },
+
     };
 
     {% if not isolate_articles%}
-    {#options["physics"] = {#}
-    {#        barnesHut: {#}
-    {#            gravitationalConstant: -10000,#}
-    {#            springLength: 100,#}
-    {#            avoidOverlap: 0.9,#}
-    {#            nodeDistance: 500#}
-    {#        }};#}
+        options["physics"] = {
+            barnesHut: {
+                gravitationalConstant: -20000,
+            },
+            stabilization: true
+        };
+
     {% endif %}
 
     var network = new vis.Network(container, data, options);

@@ -3,12 +3,12 @@
 We will create an HTML app to explore the content of each article, as well as the relationship between the articles and
 their referenced external website domains.
 
-### Demo
+## Demo
 
 Checkout [demo](https://justdataplease.com/db/medium-articles-analysis.html) (version 1)
 or [demo](https://justdataplease.com/db/medium-articles-analysis-2.html) (version 2)
 
-### How to Replicate
+## How to Replicate
 
 To replicate, you need to do the following actions
 
@@ -26,9 +26,9 @@ To replicate, you need to do the following actions
    `python kgraph -u=<username> -l=10 -i`
 5) Find the generated HTML in output folder
 
-### Metrics Documentation
+## Metrics Documentation
 
-Profile
+### Profile
 
 - Articles :
 - Top article :
@@ -50,7 +50,7 @@ Profile
 - Most Common Bigrams :
 - Most Common Trigrams :
 
-Article
+### Article
 
 - Published At :
 - Voters - Followers % :
@@ -73,3 +73,7 @@ Network
 - Star (node) :
 - Circle or Dot (node) :
 - Edge (link) - links between nodes :
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

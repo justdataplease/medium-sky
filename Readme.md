@@ -22,12 +22,14 @@ To use, you need to do the following actions:
 3) Install requirements <br>
    `pip install -r requirements.txt`
 4) Run <br>
-   `python kgraph -u=<username>`
-   If you want to use a specific number of articles (10 most recent) run <br>
+   `python kgraph -u=<username>` <br>
+   <br>
+   If you want to use a specific number of articles (10 most recent) run: <br>
    `python kgraph -u=<username> -l=10` <br>
-   If you want to run a knowledge graph with the connections of each graph isolated (version 2), run <br>
+   <br>
+   If you want to run a knowledge graph with the connections of each graph isolated (version 2), run: <br>
    `python kgraph -u=<username> -l=10 -i`
-5) Find the generated HTML in output folder
+6) Find the generated HTML in output folder
    <username>_m.html (mixed)
    <username>_i.html (-i : isolated)
 
@@ -39,7 +41,7 @@ To use, you need to do the following actions:
 - Dot or Circle (node) : This is the external website domain. The bigger the dot the more times this domain appeared. Next to domain name there is a number that shows how many times this domain appeared.
 - Edge (link) - bidirectional links between stars and dots.
 
-This app provides 2 type of Network Graphs:
+This app provides 2 versions of Network Graphs:
 1. Isolated (with -i argument) - We focus on the connections between main articles. We can also inspect for each article the domains that were referenced in them. An external website domain can appear more than 1 time in different articles.
 2. Mixed (withoun -i argument) - We focus on the connections of both main articles and external website domains. An external website domain can not appear more than 1 time. This allows us to seem the most used domains and how these domains are connected with the articles for all the articles. 
 

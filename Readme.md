@@ -33,7 +33,7 @@ To use, you need to do the following actions
 
 ## Metrics Documentation
 
-### Profile
+### Profile Section
 
 - Articles :
 - Top article :
@@ -55,7 +55,7 @@ To use, you need to do the following actions
 - Most Common Bigrams :
 - Most Common Trigrams :
 
-### Article
+### Article Section
 
 - Published At :
 - Voters - Followers % :
@@ -73,7 +73,7 @@ To use, you need to do the following actions
 - Most Common Bigrams :
 - Most Common Trigrams :
 
-Network
+### Network Graph
 
 - Star (node) :
 - Circle or Dot (node) :

@@ -11,9 +11,9 @@ their referenced external website domains.
 Checkout [demo](https://justdataplease.com/db/medium-articles-analysis.html) (version 1)
 or [demo](https://justdataplease.com/db/medium-articles-analysis-2.html) (version 2)
 
-## How to Replicate
+## How to Use
 
-To replicate, you need to do the following actions
+To use, you need to do the following actions
 
 1) You need to subscribe to medium.com api [rapidapi](https://rapidapi.com/nishujain199719-vgIfuFHZxVZ/api/medium2) (you
    get 150 requests per month for free - this app will work for free if you have less than 148 articles)
@@ -28,6 +28,8 @@ To replicate, you need to do the following actions
    If you want to run a knowledge graph with the connections of each graph isolated (version 2), run <br>
    `python kgraph -u=<username> -l=10 -i`
 5) Find the generated HTML in output folder
+   <username>_m.html (mixed)
+   <username>_i.html (-i : isolated)
 
 ## Metrics Documentation
 

@@ -35,9 +35,9 @@ To use, you need to do the following actions:
 
 ### Network Graph
 
-- Star (node) : This is the main articles. The bigger the star the more Voters the article has. Voters are the same as unique claps (that come from different persons)
+- Star (node) : This is the main article. The bigger the star the more Voters the article has. Voters are the same as unique claps (that come from different persons)
 - Dot or Circle (node) : This is the external website domain. The bigger the dot the more times this domain appeared. Next to domain name there is a number that shows how many times this domain appeared.
-- Edge (link) - bidirectional links between star and dots.
+- Edge (link) - bidirectional links between stars and dots.
 
 This app provides 2 type of Network Graphs:
 1. Isolated (with -i argument) - We focus on the connections between main articles. We can also inspect for each article the domains that were referenced in them. An external website domain can appear more than 1 time in different articles.

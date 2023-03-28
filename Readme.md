@@ -3,7 +3,7 @@
 
 # Analyze your Medium.com articles with Knowledge Graphs and NLP with Medium-Sky
 
-Medium Sky is an HTML app that allows you to explore a Medium.com profile by analyzing the content of each article, as well as the relationship between the articles and
+Medium-Sky is an HTML app that allows you to explore a Medium.com profile by analyzing the content of each article, as well as the relationship between the articles and
 their referenced external website domains.
 
 ## Live Demo

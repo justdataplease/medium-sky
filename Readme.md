@@ -1,8 +1,8 @@
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
 
-# Analyze your Medium.com articles with Knowledge Graphs and NLP
+# Analyze your Medium.com articles with Knowledge Graphs and NLP with Medium Sky
 
-We will create an HTML app to explore the content of each article, as well as the relationship between the articles and
+Medium Sky is an HTML app that allows you to explore a Medium.com profile by analyzing the content of each article, as well as the relationship between the articles and
 their referenced external website domains.
 
 ## Demo

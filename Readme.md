@@ -17,3 +17,52 @@ To replicate, you need to do the following actions
    If you want to run a knowledge graph with the connections of each graph isolated (version 2), run <br>
   `python kgraph -u=<username> -l=10 -i`
 5) Find the generated HTML in output folder
+
+
+### Metrics used
+
+Profile 
+
+- Articles :
+- Top article :
+- Publications :
+- Voters - Followers % (Article AVG) :
+- Claps per Person (Article AVG) :
+- Preferred Published Time :
+- Preferred Article Length (stemmed) :
+- Published Frequency (AVG) :
+- Last Seen :
+- External Domains per Article :
+- Stemmed words / words :
+- Unique words / words :
+- Unique words / words (stemmed) :
+- Verb / words :
+- Adj / words :
+- Noun / words :
+- Most Common Words :
+- Most Common Bigrams :
+- Most Common Trigrams :
+ 
+Article
+
+- Published At :
+- Voters - Followers % :
+- Claps per Person :
+- Responses :
+- Word Count (All) :
+- Word Count (Stemmed) :
+- Stemmed words / words :
+- Unique words / words :
+- Unique words / words (stemmed) :
+- Verb / words :
+- Adj / words :
+- Noun / words :
+- Most Common Words :
+- Most Common Bigrams :
+- Most Common Trigrams :
+
+Network
+
+- Star (node) : 
+- Circle or Dot (node) :
+- Edge (link) - links between nodes :

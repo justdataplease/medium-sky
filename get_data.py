@@ -1,6 +1,6 @@
 import requests
 import bs4
-from text_analyzer import page_analyzer, stats_to_text, counts, profile_to_text
+from text_analyzer import page_analyzer, stats_to_text, counts, profile_to_text, pos_tagger
 import re
 import markdown
 import backoff
@@ -12,6 +12,7 @@ import json
 import validators
 from datetime import datetime
 from collections import Counter
+from excluded_urls import EXCLUDE_URLS
 
 # load environment variables from .env file
 load_dotenv()
@@ -19,8 +20,6 @@ load_dotenv()
 INLINE_LINK_RE = re.compile(r'\[([^\]]+)\]\(([^)]+)\)')
 FOOTNOTE_LINK_TEXT_RE = re.compile(r'\[([^\]]+)\]\[(\d+)\]')
 FOOTNOTE_LINK_URL_RE = re.compile(r'\[(\d+)\]:\s+(\S+)')
-
-EXCLUDE_URLS = 'unsplash|shutterstock|freepi|\.png|\.jpeg|\.gif|\.jpg'
 
 API_URL = "https://medium2.p.rapidapi.com"
 
@@ -32,6 +31,13 @@ HEADERS = {
 
 def get_ld_json(soup) -> dict:
     return json.loads("".join(soup.find("script", {"type": "application/ld+json"}).contents))
+
+
+def safe_div(x: int, y: int) -> float:
+    try:
+        return x / y
+    except ZeroDivisionError:
+        return 0
 
 
 def get_timestamp(timestamp):
@@ -220,10 +226,12 @@ class MediumArticles:
     def __init__(self, username: str, articles_limit: int = 0, reset: bool = False):
         self.username = username
         self.user_words = []
+        self.user_words_all = []
         self.articles_limit = articles_limit
         self.reset = reset
-        self.clap_count = 0
-        self.voter_count = 0
+        self.clap_count = []
+        self.voter_count = []
+        self.clap_voter_count = []
         self.publication = []
         self.published_at = []
         self.article_length_cat = []
@@ -278,29 +286,42 @@ class MediumArticles:
                 pickle.dump(data_to_keep, f)
 
         # Analyze articles
+        most_voters = 0
         for article_content in data_to_keep["articles"]:
             html = markdown.markdown(article_content["markdown"])
             soup = bs4.BeautifulSoup(html, features="lxml")
             stats = page_analyzer(soup)
             article_content["stats_dict"] = stats
-            article_content["stats"] = stats_to_text(stats, other_stats=article_content)
+            article_content["stats"] = stats_to_text(article_stats=stats, article_chars=article_content, user_chars=data_to_keep["user"])
 
+            self.user_words_all.extend(stats["words_all"])
             self.user_words.extend(stats["words"])
-            self.clap_count += article_content["clap_count"]
-            self.voter_count += article_content["voter_count"]
+            self.clap_count.append(article_content["clap_count"])
+            self.voter_count.append(article_content["voter_count"])
             self.article_length_cat.append(stats["words_num_cat"])
             self.publication.append(article_content["publisher_name"])
             self.published_at.append(article_content["published_at"])
 
+            # Find top article based on voters count (unique claps)
+            if article_content["voter_count"] > most_voters:
+                top_article = (article_content["url"], article_content["stats_dict"]["h1"], article_content["publisher_name"])
+                most_voters = article_content["voter_count"]
+
         # Aggregate Statistics
+        pos_stats = pos_tagger(self.user_words_all)
+
         other_profile_stats = {
+            "top_article": top_article,
+            "user_words_all": self.user_words_all,
+            "user_words": self.user_words,
             "clap_count": self.clap_count,
             "voter_count": self.voter_count,
             "publication": self.publication,
             "published_at": self.published_at,
-            "article_length_cat": self.article_length_cat
+            "article_length_cat": self.article_length_cat,
+            "pos_stats": pos_stats,
         }
 
-        aggs = counts(self.user_words)
-        data_to_keep["user"]["profile"] = profile_to_text(data_to_keep, aggs, other_profile_stats)
+        profile_stats = counts(self.user_words, include_stemming=False)
+        data_to_keep["user"]["profile"] = profile_to_text(all_data=data_to_keep, profile_stats=profile_stats, other_profile_stats=other_profile_stats)
         return data_to_keep

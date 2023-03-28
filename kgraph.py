@@ -4,8 +4,8 @@ from urllib.parse import urlparse
 from get_data import MediumArticles
 import re
 import argparse
+from excluded_urls import EXCLUDE_URLS
 
-EXCLUDE_URLS = 'unsplash|shutterstock|freepi|\.png|\.jpeg|\.gif|\.jpg'
 
 
 def trim_url(url: str) -> str:

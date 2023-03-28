@@ -6,7 +6,7 @@
 Medium Sky is an HTML app that allows you to explore a Medium.com profile by analyzing the content of each article, as well as the relationship between the articles and
 their referenced external website domains.
 
-## Demo
+## Live Demo
 
 Checkout [demo](https://justdataplease.com/db/medium-articles-analysis.html) (version 1)
 or [demo](https://justdataplease.com/db/medium-articles-analysis-2.html) (version 2)

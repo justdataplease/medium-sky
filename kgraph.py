@@ -7,7 +7,6 @@ import argparse
 from excluded_urls import EXCLUDE_URLS
 
 
-
 def trim_url(url: str) -> str:
     try:
         url = url.split("?")[0].split("#")[0]
@@ -153,7 +152,7 @@ if __name__ == "__main__":
 
     output_file_name = f'output/{args.username.replace(".", "_")}_{"i" if args.isolate else "m"}.html'
 
-    with open(output_file_name, 'w') as file:
+    with open(output_file_name, 'w', encoding='utf8') as file:
         file.write(
             template.render(data=dataset, user=args.username,
                             user_image=dataset["user_image"],

@@ -238,9 +238,10 @@ def profile_to_text(all_data: dict, profile_stats: dict, other_profile_stats: di
     pos_stats = other_profile_stats["pos_stats"]
 
     last_date_seen = max([x["date"] for x in other_profile_stats["published_at"]])
+    bio = all_data["user"]["info"]["bio"]
 
     return f"""
-        <b>BIO</b>: {all_data["user"]["info"]["bio"][0:100]} <br>
+        <b>BIO</b>: {str(bio.encode('utf-8'))} <br>
 
         <b>Articles</b>: {len(all_data["articles"])} ({len(profile_stats["words"])} stemmed words) <br>
         <b>Top article</b>: <a href='{other_profile_stats["top_article"][0]}'>{other_profile_stats["top_article"][1]} ({other_profile_stats["top_article"][2]})</a> <br>

@@ -37,7 +37,7 @@ To use, you need to do the following actions:
 
 ### Important
 
-On the 1st run of step 4) the Medium API will be used and the data will be saved to a <username>_<number_of_articles>
+On the 1st run of step 4. the Medium API will be used and the data will be saved to a <username>_<number_of_articles>
 .pickle file.
 If you rerun without changing the -l parameter (--limit) then the local picle file will be used and not Medium API. <br>
 To test this case you can run the following file to generate output for sample users (Local *.picle files will be used):

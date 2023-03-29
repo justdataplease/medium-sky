@@ -90,7 +90,7 @@ The Profile section, is the area on the right navigation bar that shows user met
 
 ### Article Section
 
-The Article section, is the area on the right navigation bar that shows article or external website domain metrics. This a node is clicked.
+The Article section, is the area on the right navigation bar that shows article or external website domain metrics. This is visible when a node is clicked.
 
 - **Published At [Date]** : Published Date and publishing time period.
 - **Voters - Followers % [Number]** : Voters / Followers, where Voters are defined as unique users that clapped or unique claps and Followers the number of user followers at a specific time.

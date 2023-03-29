@@ -4,8 +4,13 @@ from urllib.parse import urlparse
 from get_data import MediumArticles
 import re
 import argparse
+from dotenv import load_dotenv
+import os
+import validators
 from excluded_urls import EXCLUDE_URLS
 
+# load environment variables from .env file
+load_dotenv()
 
 def trim_url(url: str) -> str:
     try:
@@ -31,8 +36,8 @@ def rescale(numbers: list, scale: tuple = (30, 70)) -> dict:
     return scaled_numbers
 
 
-def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10, reset: bool = False) -> dict:
-    a = MediumArticles(username=user, articles_limit=articles_limit, reset=reset)
+def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10, reset: bool = False, fixed_last_date: str = None) -> dict:
+    a = MediumArticles(username=user, articles_limit=articles_limit, reset=reset, fixed_last_date=fixed_last_date)
     articles_dict = a.get_all_articles()
 
     articles = articles_dict["articles"]
@@ -136,15 +141,17 @@ if __name__ == "__main__":
     DEFAULT_USERNAME = "justdataplease"
     DEFAULT_ARTICLES_LIMIT = 0
     DEFAULT_ISOLATE_ARTICLES = False
+    FIXED_LAST_DATE = os.environ.get('FIXED_LAST_DATE', default=None)
 
     # Parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--username", default=DEFAULT_USERNAME, help="username to retrieve links for")
     parser.add_argument("-l", "--limit", type=int, default=DEFAULT_ARTICLES_LIMIT, help="maximum number of articles to retrieve")
     parser.add_argument("-i", "--isolate", action="store_true", default=DEFAULT_ISOLATE_ARTICLES, help="whether to isolate articles")
+    parser.add_argument("-fd", "--fdate", type=str, default=FIXED_LAST_DATE, help="fixed last date to calculate last seen")
     args = parser.parse_args()
 
-    dataset = get_links(args.username, isolate_articles=args.isolate, articles_limit=args.limit)
+    dataset = get_links(args.username, isolate_articles=args.isolate, articles_limit=args.limit, fixed_last_date=args.fdate)
 
     # Process template and generate html
     with open('templates/template.html') as file:

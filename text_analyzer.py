@@ -186,7 +186,7 @@ def days_between(d1: datetime, d2: datetime = None) -> int:
         d2 = datetime.date.today()
     else:
         d2 = datetime.datetime.strptime(d2, "%Y-%m-%d").date()
-    return abs((d2 - d1).days)
+    return (d2 - d1).days
 
 
 def stats_to_text(article_stats: dict, article_chars: dict, user_chars: dict) -> str:
@@ -219,7 +219,7 @@ def stats_to_text(article_stats: dict, article_chars: dict, user_chars: dict) ->
         """
 
 
-def profile_to_text(all_data: dict, profile_stats: dict, profile_upa_stats: dict, other_profile_stats: dict) -> str:
+def profile_to_text(all_data: dict, profile_stats: dict, profile_upa_stats: dict, other_profile_stats: dict, fixed_last_date: datetime = None) -> str:
     domains_number = count_external_domains(all_data["articles"])
     article_length_cat = Counter(other_profile_stats['article_length_cat']).most_common(3)
     publication_count = Counter(other_profile_stats['publication']).most_common(10)
@@ -256,7 +256,7 @@ def profile_to_text(all_data: dict, profile_stats: dict, profile_upa_stats: dict
         <b>Preferred Published Time</b>: {counter_to_text(published_time_period_count)} <br>
         <b>Preferred Article Length (stemmed)</b>: {counter_to_text(article_length_cat)} <br>
         <b>Published Frequency (AVG)</b>: per {round(published_frequency[0], 1)} days ({published_frequency[1]}/{published_frequency[2]}) <br>
-        <b>Last Seen </b>: before {days_between(last_date_seen)} days<br>
+        <b>Last Seen </b>: before {days_between(last_date_seen, fixed_last_date)} days<br>
 
         <b>External Domains per Article </b>: {round(safe_div(domains_number, len(all_data["articles"])), 1)}<br>
 

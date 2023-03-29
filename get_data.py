@@ -223,8 +223,9 @@ def get_article_content(article_id: str) -> dict:
 
 
 class MediumArticles:
-    def __init__(self, username: str, articles_limit: int = 0, reset: bool = False):
+    def __init__(self, username: str, articles_limit: int = 0, reset: bool = False, fixed_last_date=False):
         self.username = username
+        self.fixed_last_date = fixed_last_date
         self.user_words = []
         self.user_words_all = []
         self.articles_limit = articles_limit
@@ -334,5 +335,5 @@ class MediumArticles:
         profile_upa_stats = counts(self.user_upa_words, include_stemming=False)
 
         data_to_keep["user"]["profile"] = profile_to_text(all_data=data_to_keep, profile_stats=profile_stats, profile_upa_stats=profile_upa_stats,
-                                                          other_profile_stats=other_profile_stats)
+                                                          other_profile_stats=other_profile_stats, fixed_last_date=self.fixed_last_date)
         return data_to_keep

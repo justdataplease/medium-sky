@@ -6,4 +6,8 @@ usernames = ['andre-ye', 'umairh', 'frank-andrade', 'lakshmanok', 'BernieSanders
 for username in usernames:
     command = f'python kgraph.py -u={username} -l=30'
     subprocess.run(command, shell=True)
+
+    command = f'python kgraph.py -u={username} -l=30 -i'
+    subprocess.run(command, shell=True)
+
     print(f"finished with {username}")

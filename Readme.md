@@ -86,6 +86,9 @@ The Profile section, is the area on the right navigation bar that shows user met
 - **Most Common Words [List]** : This is a frequency list of the most common words after using Porter Stemming (as a representation of stemmed words we used a random original word of the stemmed version.)
 - **Most Common Bigrams [List]** : This is a frequency list of the most common bigrams after using Porter Stemming (as a representation of stemmed words we used a random original word of the stemmed version.)
 - **Most Common Trigrams [List]** : This is a frequency list of the most common trigrams after using Porter Stemming (as a representation of stemmed words we used a random original word of the stemmed version.)
+- **Most Common Words (UPA) [List]** : Look at Most Common Words. UPA stands for Unique Per Article. This means that if a word is mentioned more than once in an article it will not count. The maximum frequency equals to the number of articles of the analysis.
+- **Most Common Bigrams (UPA) [List]** : Look at Most Common Bigrams. UPA stands for Unique Per Article. This means that if a word is mentioned more than once in an article it will not count. The maximum frequency equals to the number of articles of the analysis.
+- **Most Common Trigrams (UPA) [List]** : Look at Most Common Trigrams. UPA stands for Unique Per Article. This means that if a word is mentioned more than once in an article it will not count. The maximum frequency equals to the number of articles of the analysis.
 
 
 ### Article Section

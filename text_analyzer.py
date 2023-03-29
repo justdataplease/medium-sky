@@ -77,21 +77,21 @@ def counts(words: list, include_stemming=True) -> dict:
     word_counts = Counter(stemmed_words)
 
     # Find most frequent words
-    most_common_words = word_counts.most_common(20)
+    most_common_words = word_counts.most_common(30)
 
     # Create a list of bigrams and count their frequency
     bigrams = get_ngrams(stemmed_words, 2)
     bigram_counts = Counter(bigrams)
 
     # Find most frequent bigrams
-    most_common_bigrams = bigram_counts.most_common(10)
+    most_common_bigrams = bigram_counts.most_common(15)
 
     # Create a list of trigrams and count their frequency
     trigrams = get_ngrams(stemmed_words, 3)
     trigram_counts = Counter(trigrams)
 
     # Find most frequent trigrams
-    most_common_trigrams = trigram_counts.most_common(5)
+    most_common_trigrams = trigram_counts.most_common(10)
 
     # Get article type
     if len(stemmed_words) < 100:
@@ -219,7 +219,7 @@ def stats_to_text(article_stats: dict, article_chars: dict, user_chars: dict) ->
         """
 
 
-def profile_to_text(all_data: dict, profile_stats: dict, other_profile_stats: dict) -> str:
+def profile_to_text(all_data: dict, profile_stats: dict, profile_upa_stats: dict, other_profile_stats: dict) -> str:
     domains_number = count_external_domains(all_data["articles"])
     article_length_cat = Counter(other_profile_stats['article_length_cat']).most_common(3)
     publication_count = Counter(other_profile_stats['publication']).most_common(10)
@@ -274,4 +274,9 @@ def profile_to_text(all_data: dict, profile_stats: dict, other_profile_stats: di
         <b>Most Common Words</b>:<br> {counter_to_text(profile_stats["most_common_words"])}<br><br>
         <b>Most Common Bigrams</b>:<br> {counter_to_text(profile_stats["most_common_bigrams"])}<br><br>
         <b>Most Common Trigrams</b>:<br> {counter_to_text(profile_stats["most_common_trigrams"])}<br><br>
+        
+        <br>
+        <b>Most Common Words (UPA)</b>:<br> {counter_to_text(profile_upa_stats["most_common_words"])}<br><br>
+        <b>Most Common Bigrams (UPA)</b>:<br> {counter_to_text(profile_upa_stats["most_common_bigrams"])}<br><br>
+        <b>Most Common Trigrams (UPA)</b>:<br> {counter_to_text(profile_upa_stats["most_common_trigrams"])}<br><br>
         """

@@ -235,6 +235,8 @@ class MediumArticles:
         self.publication = []
         self.published_at = []
         self.article_length_cat = []
+        self.user_upa_words_all = []
+        self.user_upa_words = []
 
     def get_all_articles(self) -> dict:
         """
@@ -296,6 +298,10 @@ class MediumArticles:
 
             self.user_words_all.extend(stats["words_all"])
             self.user_words.extend(stats["words"])
+
+            self.user_upa_words_all.extend(list(set(stats["words_all"])))
+            self.user_upa_words.extend(list(set(stats["words"])))
+
             self.clap_count.append(article_content["clap_count"])
             self.voter_count.append(article_content["voter_count"])
             self.article_length_cat.append(stats["words_num_cat"])
@@ -314,6 +320,8 @@ class MediumArticles:
             "top_article": top_article,
             "user_words_all": self.user_words_all,
             "user_words": self.user_words,
+            "user_upa_words_all": self.user_upa_words_all,
+            "user_upa_words": self.user_upa_words,
             "clap_count": self.clap_count,
             "voter_count": self.voter_count,
             "publication": self.publication,
@@ -323,5 +331,8 @@ class MediumArticles:
         }
 
         profile_stats = counts(self.user_words, include_stemming=False)
-        data_to_keep["user"]["profile"] = profile_to_text(all_data=data_to_keep, profile_stats=profile_stats, other_profile_stats=other_profile_stats)
+        profile_upa_stats = counts(self.user_upa_words, include_stemming=False)
+
+        data_to_keep["user"]["profile"] = profile_to_text(all_data=data_to_keep, profile_stats=profile_stats, profile_upa_stats=profile_upa_stats,
+                                                          other_profile_stats=other_profile_stats)
         return data_to_keep

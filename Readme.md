@@ -34,13 +34,6 @@ To use, you need to do the following actions:
    <username>_<number_of_articles>_m.html (mixed or version 1)
    <username>_<number_of_articles>_i.html (-i : isolated or version 2)
 
-A network graph is a diagram that shows how different elements (nodes) are related to each other by using lines (edges).12 In this network graph, we have two types of nodes and one type of edge:
-
-Star (node): This represents the main article. The size of the star shows how many voters the article has. Voters are people who clapped for the article only once.
-Dot or circle (node): This represents an external website domain. The size of the dot shows how many times this domain appeared in the articles. Next to the domain name, there is a number that shows how many articles have this domain.
-Edge (link): This is a line that connects a star and a dot. It means that the article (star) has a link to the domain (dot). The edges are bidirectional, which means they go both ways.3
-
-
 ## Metrics Documentation
 
 ### Network Graph
@@ -58,7 +51,7 @@ This app provides 2 versions of Network Graphs:
 
 ### Profile Section
 
-Profile section is the left navbar that appears when you first load the app. 
+The Profile section, is the area on the right navigation bar that shows user metrics. This is visible when the app is first opened.
 
 - **Articles [Number]** : Number of articles that were used for the analysis (not the total number of articles of a user). Next to articles, there is also the total numbers of words.
   To find the total number of words we exclude english stopwords (based on [NTLK](https://www.nltk.org/) package) and words less than 3 characters. 
@@ -97,13 +90,15 @@ Profile section is the left navbar that appears when you first load the app.
 
 ### Article Section
 
-- **Published At [Date]** : Published Data and publishing time period.
-- **Voters - Followers % [Number]** : Voters / Followers, where Voters are the same as unique claps (that come from different persons) and Followers the number of user followers at a specific time.
+The Article section, is the area on the right navigation bar that shows article or external website domain metrics. This a node is clicked.
+
+- **Published At [Date]** : Published Date and publishing time period.
+- **Voters - Followers % [Number]** : Voters / Followers, where Voters are defined as unique users that clapped or unique claps and Followers the number of user followers at a specific time.
 - **Claps per Person [Number]** : Claps / Voters, where Voters are defined as unique users that clapped or unique claps.
 - **Responses [Number]** : The number of post comments.
 - **Word Count (All) [Number]** : This refers to the number of words.
 - **Word Count (Stemmed) [Number]** : This refers to the number of words, if we exclude english stopwords and words with less than 3 characters.
-- **Stemmed words / words [Number]** : This refers to the number of words if we exclude english stop words and words with less than 3 characters. Then we divide with the total number of words.
+- **Stemmed words / words [Number]** : This refers to the number of words if we exclude english stop words and words with less than 3 characters. Then, we divide with the total number of words.
 - **Unique words / words [Number]** : This refers to the unique number of words divided by the total number of words.
 - **Unique words / words (stemmed) [Number]** : This refers to the unique number of words, after using Porter Stemming, if we exclude english stopwords and words with less than 3 characters, divided by the number of words if we exclude english stopwords and words with less than 3 characters.
 - **Verb / words [Number]** : Using NLTK pos_tagger, this the percentage of (recognised) verbs in the text.

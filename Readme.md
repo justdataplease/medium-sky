@@ -16,14 +16,15 @@ or [demo](https://justdataplease.com/db/medium-articles-analysis-2.html) (versio
 
 To use, you need to do the following actions:
 
-1) You need to subscribe to medium.com api [rapidapi](https://rapidapi.com/nishujain199719-vgIfuFHZxVZ/api/medium2) (you
+1) You need to subscribe to medium.com api [Rapidapi](https://rapidapi.com/nishujain199719-vgIfuFHZxVZ/api/medium2) (you
    get 150 requests per month for free - if you want to analyze all your articles, this app will work for free if you
    have less than 148 articles).
-2) Copy paste .env_sample to .env and paste you X-RapidAPI-Key that you will
-   find [here](https://rapidapi.com/nishujain199719-vgIfuFHZxVZ/api/medium2).
-3) Install requirements <br>
+2) [OPTIONAL] In order to calculate chatgpt metrics you need to have an account at [Openai](https://platform.openai.com).
+3) Copy paste .env_sample to .env and paste you X-RapidAPI-Key that you will
+   find [here](https://rapidapi.com/nishujain199719-vgIfuFHZxVZ/api/medium2) and [OPTIONAL] Openai api key that you will find [here](https://platform.openai.com/account/api-keys).
+4) Install requirements <br>
    `pip install -r requirements.txt`
-4) Run <br>
+5) Run <br>
    `python kgraph -u=<username>` <br>
    <br>
    If you want to use just 10 of your most recent articles run: <br>
@@ -31,7 +32,13 @@ To use, you need to do the following actions:
    <br>
    If you want to use an isolated knowledge graph (version 2 - Look Documentation), run: <br>
    `python kgraph -u=<username> -l=10 -i`
-5) Find the generated HTML in output folder
+
+   <br>
+   
+   If you want to use Chatgpt to get summary and keywords metrics (Look Documentation), run: <br>
+   `python kgraph -u=<username> -l=10 -ai`
+
+6) Find the generated HTML in output folder
    <username>_m.html (mixed or version 1)
    <username>_i.html (-i : isolated or version 2)
 
@@ -42,6 +49,9 @@ On the 1st run of step 4. the Medium API will be used and the data will be saved
 If you rerun without changing the -l parameter (--limit) then the local picle file will be used and not Medium API. <br>
 To test this case you can run the following file to generate output for sample users (Local *.picle files will be used):
     `python run_sample_users.py`
+[OPTIONAL] On every run it will check if we got a response from Openai API for a specific article. If we do not have the response
+Openai API will be used and the response will be saved to a <username>_openai_repsonses.csv file. If we have a response,
+then the local file will be used and not Openai API.
 
 ## Metrics Documentation
 
@@ -123,7 +133,7 @@ first opened.
   representation of stemmed words we used a random original word of the stemmed version.)
 - **Most Common Trigrams [List]** : This is a frequency list of the most common trigrams after using Porter Stemming (as
   a representation of stemmed words we used a random original word of the stemmed version.)
-- **Most Common ChatGPT Words (UPA) [List]** : Most common words based on ChatGPT keyword extraction prompt.
+- **Most Common ChatGPT Words (UPA) [List]** : Most common words based on ChatGPT keyword extraction prompt. UPA stands for Unique Per Article.
 - **Most Common Words (UPA) [List]** : Look at Most Common Words. UPA stands for Unique Per Article. This means that if
   a word is mentioned more than once in an article it will not count. The maximum frequency equals to the number of
   articles of the analysis.
@@ -163,7 +173,7 @@ is visible when a node is clicked.
 - **Most Common Trigrams [List]** : This is a frequency list of the most common trigrams after using Porter Stemming (as
   a representation of stemmed words we used a random original word of the stemmed version.)
 - **ChatGPT Keywords [List]** : Keywords based on ChatGPT keywords extraction prompt.
-- **ChatGPT Summary [List]** : Summary on ChatGPT summary prompt.
+- **ChatGPT Summary [List]** : Summary based on ChatGPT summary prompt.
 
 ## License
 

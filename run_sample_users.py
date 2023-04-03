@@ -1,13 +1,13 @@
 import subprocess
 
-usernames = ['andre-ye', 'umairh', 'frank-andrade', 'lakshmanok', 'BernieSanders', 'nikoskafritsas', 'dima806', 'anne.bonfert', 'ngwaifoong92', 'coachtony',
-             'justdataplease', 'benjaminsledge', 'datasculptor', 'kozyrkov', 'dariusforoux', 'christianlauer90', 'ev', 'barackobama', 'profgalloway']
+usernames = ['umairh', 'frank-andrade', 'nikoskafritsas', 'dima806', 'anne.bonfert', 'coachtony',
+             'justdataplease', 'benjaminsledge', 'kozyrkov', 'dariusforoux', 'barackobama']
 
 for username in usernames:
-    command = f'python kgraph.py -u={username} -l=30'
+    command = f'python kgraph.py -u={username} -l=30 -ai'
     subprocess.run(command, shell=True)
 
-    command = f'python kgraph.py -u={username} -l=30 -i'
+    command = f'python kgraph.py -u={username} -l=30 -i -ai'
     subprocess.run(command, shell=True)
 
     print(f"finished with {username}")

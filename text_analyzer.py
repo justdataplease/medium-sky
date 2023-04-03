@@ -284,16 +284,15 @@ def profile_to_text(all_data: dict, profile_stats: dict, fixed_last_date: dateti
         <b>Noun / words</b>: {round(safe_div(pos_stats["noun"], words_all_num) * 100, 1)}% ({pos_stats["noun"]} / {words_all_num})<br>
         <br>
 
-        <br>
-        <b>Most Common ChatGPT Keywords (UPA)</b>:<br> {counter_to_text(chatgpt_words_count)}<br><br>
-        <b>Most Common Words (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_words"])}<br><br>
-        <b>Most Common Bigrams (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_bigrams"])}<br><br>
-        <b>Most Common Trigrams (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_trigrams"])}<br><br>
-        
-        <br>
         <b>Most Common Words</b>:<br> {counter_to_text(words_counts["most_common_words"])}<br><br>
         <b>Most Common Bigrams</b>:<br> {counter_to_text(words_counts["most_common_bigrams"])}<br><br>
         <b>Most Common Trigrams</b>:<br> {counter_to_text(words_counts["most_common_trigrams"])}<br><br>
+        
+        <b>Most Common ChatGPT Keywords (UPA)</b>:<br> {counter_to_text(chatgpt_words_count)}<br><br>
+
+        <b>Most Common Words (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_words"])}<br><br>
+        <b>Most Common Bigrams (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_bigrams"])}<br><br>
+        <b>Most Common Trigrams (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_trigrams"])}<br><br>
         """
 
 
@@ -335,9 +334,9 @@ def chatgpt_api(soup, num_keyphrases=10, dummy=False):
     return reply
 
 
-def chat_gpt_parser(username, soup, article_id):
+def chatgpt_parser(username, soup, article_id):
     # Define the filename and API endpoint URL
-    filename = f'data\{username}_openai_responses.txt'
+    filename = f'data\{username}_openai_responses.csv'
 
     # Check if the file exists
     if os.path.exists(filename):
@@ -360,13 +359,13 @@ def chat_gpt_parser(username, soup, article_id):
                 # If the ID is not found, use the API and add the new ID and response to the file
                 response = chatgpt_api(soup)
                 lines.append([article_id, response])
-                with open(filename, 'a', newline='') as f:
+                with open(filename, 'a', newline='', encoding='utf8') as f:
                     writer = csv.writer(f, delimiter='\t')
                     writer.writerow([article_id, response])
     else:
         # If the file does not exist, use the API and create the file with the new ID and response
         response = chatgpt_api(soup)
-        with open(filename, 'w', newline='') as f:
+        with open(filename, 'w', newline='', encoding='utf8') as f:
             writer = csv.writer(f, delimiter='\t')
             writer.writerow([article_id, response])
 
@@ -376,7 +375,7 @@ def chat_gpt_parser(username, soup, article_id):
     summary = "error"
 
     try:
-        keywords = re.search(r'KEYWORDS(?:\s+)?(?:\=|\:)(?:\s+)?(.*)', response).group(1).split(",")
+        keywords = re.search(r'KEYWORDS(?:\s+)?(?:\=|\:)(?:\s+)?([\w\,\-0-9\n\t\s]+)(?:SUMMARY)?', response).group(1).split(",")
         keywords = [x.strip().lower().replace(".", "") for x in keywords]
         unikeywords = []
         for x in keywords:
@@ -386,7 +385,7 @@ def chat_gpt_parser(username, soup, article_id):
         pass
 
     try:
-        summary = re.search(r'SUMMARY(?:\s+)?(?:\=|\:)(?:\s+)?(.*)(?:KEYWORDS)?', response).group(1).strip()
+        summary = re.search(r'SUMMARY(?:\s+)?(?:\=|\:)(?:\s+)?([\w\,\-0-9\n\t\s\.\,\(\)]+)(?:KEYWORDS)?', response).group(1).strip()
     except Exception as exc:
         pass
 

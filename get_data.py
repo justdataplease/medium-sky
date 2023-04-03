@@ -1,6 +1,6 @@
 import requests
 import bs4
-from text_analyzer import page_analyzer, stats_to_text, counts, profile_to_text, pos_tagger, chat_gpt_parser
+from text_analyzer import page_analyzer, stats_to_text, counts, profile_to_text, pos_tagger, chatgpt_parser
 import re
 import markdown
 import backoff
@@ -299,7 +299,7 @@ class MediumArticles:
             if self.use_gpt:
                 html = markdown.markdown(article_content["markdown"])
                 soup = bs4.BeautifulSoup(html, features="lxml")
-                article_content["chatgpt"] = chat_gpt_parser(article_id=article_content["id"], soup=soup, username=self.username)
+                article_content["chatgpt"] = chatgpt_parser(article_id=article_content["id"], soup=soup, username=self.username)
             else:
                 article_content["chatgpt"] = {"keywords": [], "summary": "", "unikeywords": []}
 

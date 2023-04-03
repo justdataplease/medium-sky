@@ -9,6 +9,9 @@ from nltk.corpus import stopwords
 from nltk.tag import pos_tag
 from nltk.util import ngrams
 import validators
+import openai
+import os
+import csv
 
 
 def tag_visible(element) -> bool:
@@ -113,6 +116,17 @@ def counts(words: list, include_stemming=True) -> dict:
             }
 
 
+def html_to_words(soup):
+    # Find all text content in the HTML document
+    texts = soup.findAll(text=True)
+    visible_texts = filter(tag_visible, texts)
+    text = u" ".join(t.strip() for t in visible_texts)
+
+    # Split the text content into words
+    words = re.findall('\w+', text.lower())
+    return words
+
+
 def page_analyzer(soup) -> dict:
     # Parse the HTML content using BeautifulSoup
     try:
@@ -127,13 +141,8 @@ def page_analyzer(soup) -> dict:
         print("no h2 found...")
         h2 = ""
 
-    # Find all text content in the HTML document
-    texts = soup.findAll(text=True)
-    visible_texts = filter(tag_visible, texts)
-    text = u" ".join(t.strip() for t in visible_texts)
-
     # Split the text content into words
-    words = re.findall('\w+', text.lower())
+    words = html_to_words(soup)
 
     pos_tags = pos_tagger(words)
     counters = counts(words)
@@ -196,6 +205,7 @@ def stats_to_text(article_stats: dict, article_chars: dict, user_chars: dict) ->
     return f"""
         <b>Heading 1</b>: {article_stats["h1"]}<br>
         <b>Heading 2</b>: {article_stats["h2"]}<br>
+        <b>ChatGPT Summary</b>:<br> {article_chars["chatgpt"]["summary"]}<br>
         <br>
         <b>Publication</b>: <a href='{article_chars["publisher_url"]}'>{article_chars["publisher_name"]}</a> <br>
         <b>Published At</b>: {str(article_chars["published_at"]["date"])} {article_chars["published_at"]["time_period"]}<br>
@@ -213,38 +223,43 @@ def stats_to_text(article_stats: dict, article_chars: dict, user_chars: dict) ->
         <b>Noun / words</b>: {round(safe_div(article_stats["noun"], article_stats["words_num_all"]) * 100, 1)}% ({article_stats["noun"]} / {article_stats["words_num_all"]})<br>
 
         <br>
+        <b>ChatGPT Keywords</b>:<br> {", ".join(article_chars["chatgpt"]["keywords"])}<br><br>
         <b>Most Common Words</b>:<br> {counter_to_text(article_stats["most_common_words"])}<br><br>
         <b>Most Common Bigrams</b>:<br> {counter_to_text(article_stats["most_common_bigrams"])}<br><br>
         <b>Most Common Trigrams</b>:<br> {counter_to_text(article_stats["most_common_trigrams"])}<br><br>
+        <br>
         """
 
 
-def profile_to_text(all_data: dict, profile_stats: dict, profile_upa_stats: dict, other_profile_stats: dict, fixed_last_date: datetime = None) -> str:
+def profile_to_text(all_data: dict, profile_stats: dict, fixed_last_date: datetime = None) -> str:
+    words_upa_counts = profile_stats["words_upa_counts"]
+    chatgpt_words_count = profile_stats["chatgpt_words_count"]
+    words_counts = profile_stats["words_counts"]
+    pos_stats = profile_stats["pos_stats"]
+
     domains_number = count_external_domains(all_data["articles"])
-    article_length_cat = Counter(other_profile_stats['article_length_cat']).most_common(3)
-    publication_count = Counter(other_profile_stats['publication']).most_common(10)
-    published_frequency = find_dates_frequency([x['date'] for x in other_profile_stats["published_at"]])
-    published_time_period_count = Counter([f"{x['time_period'][0]}-{x['time_period'][1]}" for x in other_profile_stats["published_at"]]).most_common(10)
+    article_length_cat = Counter(profile_stats['article_length_cat']).most_common(3)
+    publication_count = Counter(profile_stats['publication']).most_common(10)
+    published_frequency = find_dates_frequency([x['date'] for x in profile_stats["published_at"]])
+    published_time_period_count = Counter([f"{x['time_period'][0]}-{x['time_period'][1]}" for x in profile_stats["published_at"]]).most_common(10)
     followers = all_data["user"]["info"]["followers_count"]
 
-    words_all_num = len(other_profile_stats["user_words_all"])
-    unique_words_all_num = len(set(other_profile_stats["user_words_all"]))
-    words_num = len(other_profile_stats["user_words"])
-    unique_words_num = len(set(other_profile_stats["user_words"]))
+    words_all_num = len(profile_stats["user_words_all"])
+    unique_words_all_num = len(set(profile_stats["user_words_all"]))
+    words_num = len(profile_stats["user_words"])
+    unique_words_num = len(set(profile_stats["user_words"]))
 
-    clap_voter_avg = find_list_div_avg(other_profile_stats["clap_count"], other_profile_stats["voter_count"])
-    voter_follower_avg = find_list_div_avg(other_profile_stats["voter_count"], [followers] * len(other_profile_stats["voter_count"]))
+    clap_voter_avg = find_list_div_avg(profile_stats["clap_count"], profile_stats["voter_count"])
+    voter_follower_avg = find_list_div_avg(profile_stats["voter_count"], [followers] * len(profile_stats["voter_count"]))
 
-    pos_stats = other_profile_stats["pos_stats"]
-
-    last_date_seen = max([x["date"] for x in other_profile_stats["published_at"]])
+    last_date_seen = max([x["date"] for x in profile_stats["published_at"]])
     bio = all_data["user"]["info"]["bio"]
 
     return f"""
         <b>BIO</b>: {bio} <br>
 
-        <b>Articles</b>: {len(all_data["articles"])} ({len(profile_stats["words"])} stemmed words) <br>
-        <b>Top article</b>: <a href='{other_profile_stats["top_article"][0]}'>{other_profile_stats["top_article"][1]} ({other_profile_stats["top_article"][2]})</a> <br>
+        <b>Articles</b>: {len(all_data["articles"])} ({len(words_counts["words"])} stemmed words) <br>
+        <b>Top article</b>: <a href='{profile_stats["top_article"][0]}'>{profile_stats["top_article"][1]} ({profile_stats["top_article"][2]})</a> <br>
 
         <b>Publications</b>: {counter_to_text(publication_count)} <br>
         <b>Followers</b>: {followers} <br>
@@ -269,14 +284,110 @@ def profile_to_text(all_data: dict, profile_stats: dict, profile_upa_stats: dict
         <b>Noun / words</b>: {round(safe_div(pos_stats["noun"], words_all_num) * 100, 1)}% ({pos_stats["noun"]} / {words_all_num})<br>
         <br>
 
-
         <br>
-        <b>Most Common Words</b>:<br> {counter_to_text(profile_stats["most_common_words"])}<br><br>
-        <b>Most Common Bigrams</b>:<br> {counter_to_text(profile_stats["most_common_bigrams"])}<br><br>
-        <b>Most Common Trigrams</b>:<br> {counter_to_text(profile_stats["most_common_trigrams"])}<br><br>
+        <b>Most Common ChatGPT Keywords (UPA)</b>:<br> {counter_to_text(chatgpt_words_count)}<br><br>
+        <b>Most Common Words (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_words"])}<br><br>
+        <b>Most Common Bigrams (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_bigrams"])}<br><br>
+        <b>Most Common Trigrams (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_trigrams"])}<br><br>
         
         <br>
-        <b>Most Common Words (UPA)</b>:<br> {counter_to_text(profile_upa_stats["most_common_words"])}<br><br>
-        <b>Most Common Bigrams (UPA)</b>:<br> {counter_to_text(profile_upa_stats["most_common_bigrams"])}<br><br>
-        <b>Most Common Trigrams (UPA)</b>:<br> {counter_to_text(profile_upa_stats["most_common_trigrams"])}<br><br>
+        <b>Most Common Words</b>:<br> {counter_to_text(words_counts["most_common_words"])}<br><br>
+        <b>Most Common Bigrams</b>:<br> {counter_to_text(words_counts["most_common_bigrams"])}<br><br>
+        <b>Most Common Trigrams</b>:<br> {counter_to_text(words_counts["most_common_trigrams"])}<br><br>
         """
+
+
+def chatgpt_api(soup, num_keyphrases=10, dummy=False):
+    if dummy:
+        return "hello this is a test"
+
+    stop_words = set(stopwords.words('english'))
+    words = html_to_words(soup)
+    new_words = [x for x in words if x not in stop_words and len(x) > 2]
+
+    try:
+        full_text = " ".join(new_words[0:2000])
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user",
+                 "content": f"""Please provide a summary and suggest the top {num_keyphrases} keywords that best describe the important topics or themes present in the following text. Your answer should include the format: KEYWORDS=keyword_1, keyword_2, ..., keyword_{num_keyphrases} and SUMMARY=summary_text.\n\n {full_text}"""},
+            ]
+        )
+    except Exception as exc:
+        print(exc)
+
+        full_text = " ".join(new_words[0:1000])
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user",
+                 "content": f"""Please provide a summary and suggest the top {num_keyphrases} keywords that best describe the important topics or themes present in the following text. Your answer should include the format: KEYWORDS=keyword_1, keyword_2, ..., keyword_{num_keyphrases} and SUMMARY=summary_text.\n\n {full_text}"""},
+            ]
+        )
+
+    reply = response["choices"][0]["message"]["content"]
+
+    return reply
+
+
+def chat_gpt_parser(username, soup, article_id):
+    # Define the filename and API endpoint URL
+    filename = f'data\{username}_openai_responses.txt'
+
+    # Check if the file exists
+    if os.path.exists(filename):
+        # If the file exists, open it and search for the ID
+        with open(filename, 'r') as f:
+            found = False
+            reader = csv.reader(f, delimiter='\t')
+            lines = []
+            for cols in reader:
+                if cols[0] == article_id:
+                    print(f"id {article_id} found, using local file...")
+                    # If the ID is found, use the associated response
+                    response = cols[1]
+                    found = True
+                else:
+                    # Otherwise, add the line to the list of lines
+                    lines.append(cols)
+            if not found:
+                print(f"id {article_id} not found, using the api...")
+                # If the ID is not found, use the API and add the new ID and response to the file
+                response = chatgpt_api(soup)
+                lines.append([article_id, response])
+                with open(filename, 'a', newline='') as f:
+                    writer = csv.writer(f, delimiter='\t')
+                    writer.writerow([article_id, response])
+    else:
+        # If the file does not exist, use the API and create the file with the new ID and response
+        response = chatgpt_api(soup)
+        with open(filename, 'w', newline='') as f:
+            writer = csv.writer(f, delimiter='\t')
+            writer.writerow([article_id, response])
+
+    # Do something with the response
+    # Find the keywords and summary in the text
+    keywords = "error"
+    summary = "error"
+
+    try:
+        keywords = re.search(r'KEYWORDS(?:\s+)?(?:\=|\:)(?:\s+)?(.*)', response).group(1).split(",")
+        keywords = [x.strip().lower().replace(".", "") for x in keywords]
+        unikeywords = []
+        for x in keywords:
+            unikeywords.extend(x.split(" "))
+        unikeywords = list(set(unikeywords))
+    except Exception as exc:
+        pass
+
+    try:
+        summary = re.search(r'SUMMARY(?:\s+)?(?:\=|\:)(?:\s+)?(.*)(?:KEYWORDS)?', response).group(1).strip()
+    except Exception as exc:
+        pass
+
+    return {"keywords": keywords, "summary": summary, "unikeywords": unikeywords}

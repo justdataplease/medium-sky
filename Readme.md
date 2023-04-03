@@ -123,6 +123,7 @@ first opened.
   representation of stemmed words we used a random original word of the stemmed version.)
 - **Most Common Trigrams [List]** : This is a frequency list of the most common trigrams after using Porter Stemming (as
   a representation of stemmed words we used a random original word of the stemmed version.)
+- **Most Common ChatGPT Words (UPA) [List]** : Most common words based on ChatGPT keyword extraction prompt.
 - **Most Common Words (UPA) [List]** : Look at Most Common Words. UPA stands for Unique Per Article. This means that if
   a word is mentioned more than once in an article it will not count. The maximum frequency equals to the number of
   articles of the analysis.
@@ -161,6 +162,8 @@ is visible when a node is clicked.
   representation of stemmed words we used a random original word of the stemmed version.)
 - **Most Common Trigrams [List]** : This is a frequency list of the most common trigrams after using Porter Stemming (as
   a representation of stemmed words we used a random original word of the stemmed version.)
+- **ChatGPT Keywords [List]** : Keywords based on ChatGPT keywords extraction prompt.
+- **ChatGPT Summary [List]** : Summary on ChatGPT summary prompt.
 
 ## License
 

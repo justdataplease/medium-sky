@@ -1,6 +1,6 @@
 import requests
 import bs4
-from text_analyzer import page_analyzer, stats_to_text, counts, profile_to_text, pos_tagger
+from text_analyzer import page_analyzer, stats_to_text, counts, profile_to_text, pos_tagger, chat_gpt_parser
 import re
 import markdown
 import backoff
@@ -13,6 +13,8 @@ import validators
 from datetime import datetime
 from collections import Counter
 from excluded_urls import EXCLUDE_URLS
+import os
+import openai
 
 # load environment variables from .env file
 load_dotenv()
@@ -22,6 +24,8 @@ FOOTNOTE_LINK_TEXT_RE = re.compile(r'\[([^\]]+)\]\[(\d+)\]')
 FOOTNOTE_LINK_URL_RE = re.compile(r'\[(\d+)\]:\s+(\S+)')
 
 API_URL = "https://medium2.p.rapidapi.com"
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 HEADERS = {
     "X-RapidAPI-Key": os.environ.get('RAPID_API'),
@@ -183,7 +187,6 @@ def get_user_id(user: str) -> str:
     """
     url = f"{API_URL}/user/id_for/{user}"
     response = requests.get(url, headers=HEADERS)
-    response.json()
     user_id = response.json()["id"]
     return user_id
 
@@ -223,9 +226,10 @@ def get_article_content(article_id: str) -> dict:
 
 
 class MediumArticles:
-    def __init__(self, username: str, articles_limit: int = 0, reset: bool = False, fixed_last_date=False):
+    def __init__(self, username: str, articles_limit: int = 0, reset: bool = False, fixed_last_date=False, use_gpt=False):
         self.username = username
         self.fixed_last_date = fixed_last_date
+        self.use_gpt = use_gpt
         self.user_words = []
         self.user_words_all = []
         self.articles_limit = articles_limit
@@ -238,6 +242,7 @@ class MediumArticles:
         self.article_length_cat = []
         self.user_upa_words_all = []
         self.user_upa_words = []
+        self.chatgpt_keywords = []
 
     def get_all_articles(self) -> dict:
         """
@@ -249,6 +254,7 @@ class MediumArticles:
         """
         file_name = f'data/{self.username}_{self.articles_limit}.pickle'
         # If file exists, load data from file
+        print(file_name)
         if os.path.exists(file_name) and not self.reset:
             print("using the local file...")
             with open(file_name, 'rb') as f:
@@ -288,6 +294,15 @@ class MediumArticles:
             with open(file_name, 'wb') as f:
                 pickle.dump(data_to_keep, f)
 
+        # Generate keywords and summary using ChatGPT
+        for article_content in data_to_keep["articles"]:
+            if self.use_gpt:
+                html = markdown.markdown(article_content["markdown"])
+                soup = bs4.BeautifulSoup(html, features="lxml")
+                article_content["chatgpt"] = chat_gpt_parser(article_id=article_content["id"], soup=soup, username=self.username)
+            else:
+                article_content["chatgpt"] = {"keywords": [], "summary": "", "unikeywords": []}
+
         # Analyze articles
         most_voters = 0
         for article_content in data_to_keep["articles"]:
@@ -308,6 +323,7 @@ class MediumArticles:
             self.article_length_cat.append(stats["words_num_cat"])
             self.publication.append(article_content["publisher_name"])
             self.published_at.append(article_content["published_at"])
+            self.chatgpt_keywords.append(article_content["chatgpt"]["unikeywords"])
 
             # Find top article based on voters count (unique claps)
             if article_content["voter_count"] > most_voters:
@@ -317,7 +333,16 @@ class MediumArticles:
         # Aggregate Statistics
         pos_stats = pos_tagger(self.user_words_all)
 
-        other_profile_stats = {
+        # ChatGPT Most Common Words
+        total_chatgpt_keywords = []
+        for x in self.chatgpt_keywords:
+            total_chatgpt_keywords.extend(x)
+        chatgpt_words_count = counts(total_chatgpt_keywords)["most_common_words"]
+
+        words_counts = counts(self.user_words, include_stemming=False)
+        words_upa_counts = counts(self.user_upa_words, include_stemming=False)
+
+        profile_stats = {
             "top_article": top_article,
             "user_words_all": self.user_words_all,
             "user_words": self.user_words,
@@ -329,11 +354,10 @@ class MediumArticles:
             "published_at": self.published_at,
             "article_length_cat": self.article_length_cat,
             "pos_stats": pos_stats,
+            "chatgpt_words_count": chatgpt_words_count,
+            "words_counts": words_counts,
+            "words_upa_counts": words_upa_counts,
         }
 
-        profile_stats = counts(self.user_words, include_stemming=False)
-        profile_upa_stats = counts(self.user_upa_words, include_stemming=False)
-
-        data_to_keep["user"]["profile"] = profile_to_text(all_data=data_to_keep, profile_stats=profile_stats, profile_upa_stats=profile_upa_stats,
-                                                          other_profile_stats=other_profile_stats, fixed_last_date=self.fixed_last_date)
+        data_to_keep["user"]["profile"] = profile_to_text(all_data=data_to_keep, profile_stats=profile_stats, fixed_last_date=self.fixed_last_date)
         return data_to_keep

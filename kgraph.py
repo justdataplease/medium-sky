@@ -12,6 +12,7 @@ from excluded_urls import EXCLUDE_URLS
 # load environment variables from .env file
 load_dotenv()
 
+
 def trim_url(url: str) -> str:
     try:
         url = url.split("?")[0].split("#")[0]
@@ -36,8 +37,9 @@ def rescale(numbers: list, scale: tuple = (30, 70)) -> dict:
     return scaled_numbers
 
 
-def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10, reset: bool = False, fixed_last_date: str = None) -> dict:
-    a = MediumArticles(username=user, articles_limit=articles_limit, reset=reset, fixed_last_date=fixed_last_date)
+def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10, reset: bool = False, fixed_last_date: str = None,
+              use_gpt: bool = False) -> dict:
+    a = MediumArticles(username=user, articles_limit=articles_limit, reset=reset, fixed_last_date=fixed_last_date, use_gpt=use_gpt)
     articles_dict = a.get_all_articles()
 
     articles = articles_dict["articles"]
@@ -141,6 +143,7 @@ if __name__ == "__main__":
     DEFAULT_USERNAME = "justdataplease"
     DEFAULT_ARTICLES_LIMIT = 0
     DEFAULT_ISOLATE_ARTICLES = False
+    USE_GPT = False
     FIXED_LAST_DATE = os.environ.get('FIXED_LAST_DATE', default=None)
 
     # Parse arguments
@@ -149,9 +152,10 @@ if __name__ == "__main__":
     parser.add_argument("-l", "--limit", type=int, default=DEFAULT_ARTICLES_LIMIT, help="maximum number of articles to retrieve")
     parser.add_argument("-i", "--isolate", action="store_true", default=DEFAULT_ISOLATE_ARTICLES, help="whether to isolate articles")
     parser.add_argument("-fd", "--fdate", type=str, default=FIXED_LAST_DATE, help="fixed last date to calculate last seen")
+    parser.add_argument("-ai", "--ai", action="store_true", default=USE_GPT, help="use chatgpt to extract keywords and summary")
     args = parser.parse_args()
 
-    dataset = get_links(args.username, isolate_articles=args.isolate, articles_limit=args.limit, fixed_last_date=args.fdate)
+    dataset = get_links(args.username, isolate_articles=args.isolate, articles_limit=args.limit, fixed_last_date=args.fdate, use_gpt=args.ai)
 
     # Process template and generate html
     with open('templates/template.html') as file:

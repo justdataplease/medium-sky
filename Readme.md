@@ -9,20 +9,20 @@ their referenced external website domains.
 
 ## Live Demo
 
-Checkout [demo](https://justdataplease.com/db/medium-sky/justdataplease_m.html) (version 1)
-or [demo](https://justdataplease.com/db/medium-sky/justdataplease_i.html) (version 2)
+Checkout [demo](https://demo.justdataplease.com/products/medium-sky/justdataplease_m.html) (version 1)
+or [demo](https://demo.justdataplease.com/products/medium-sky/justdataplease_i.html) (version 2)
 
 Other demo (version 1): <br>
-[barackobama](https://justdataplease.com/db/medium-sky/barackobama_m.html) <br>
-[coachtony](https://justdataplease.com/db/medium-sky/coachtony_m.html) <br>
-[dariusforoux](https://justdataplease.com/db/medium-sky/dariusforoux_m.html) <br>
-[benjaminsledge](https://justdataplease.com/db/medium-sky/benjaminsledge_m.html) <br>
-[frank-andrader](https://justdataplease.com/db/medium-sky/frank-andrader_m.html) <br>
-[kozyrkov](https://justdataplease.com/db/medium-sky/kozyrkov_m.html) <br>
-[umairh](https://justdataplease.com/db/medium-sky/umairh_m.html) <br>
-[anne_bonfert](https://justdataplease.com/db/medium-sky/anne_bonfert_m.html) <br>
-[nikoskafritsas](https://justdataplease.com/db/medium-sky/nikoskafritsas_m.html) <br>
-[dima806](https://justdataplease.com/db/medium-sky/dima806_m.html) <br>
+[barackobama](https://demo.justdataplease.com/products/medium-sky/barackobama_m.html) <br>
+[coachtony](https://demo.justdataplease.com/products/medium-sky/coachtony_m.html) <br>
+[dariusforoux](https://demo.justdataplease.com/products/medium-sky/dariusforoux_m.html) <br>
+[benjaminsledge](https://demo.justdataplease.com/products/medium-sky/benjaminsledge_m.html) <br>
+[frank-andrader](https://demo.justdataplease.com/products/medium-sky/frank-andrader_m.html) <br>
+[kozyrkov](https://demo.justdataplease.com/products/medium-sky/kozyrkov_m.html) <br>
+[umairh](https://demo.justdataplease.com/products/medium-sky/umairh_m.html) <br>
+[anne_bonfert](https://demo.justdataplease.com/products/medium-sky/anne_bonfert_m.html) <br>
+[nikoskafritsas](https://demo.justdataplease.com/products/medium-sky/nikoskafritsas_m.html) <br>
+[dima806](https://demo.justdataplease.com/products/medium-sky/dima806_m.html) <br>
 
 
 

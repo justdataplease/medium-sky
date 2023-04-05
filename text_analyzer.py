@@ -9,9 +9,9 @@ from nltk.corpus import stopwords
 from nltk.tag import pos_tag
 from nltk.util import ngrams
 import validators
-import openai
 import os
 import csv
+import openai
 
 
 def tag_visible(element) -> bool:
@@ -385,7 +385,7 @@ def chatgpt_parser(username, soup, article_id):
         pass
 
     try:
-        summary = re.search(r'SUMMARY(?:\s+)?(?:\=|\:)(?:\s+)?([\w\,\-0-9\n\t\s\.\,\(\)]+)(?:KEYWORDS)?', response).group(1).strip()
+        summary = re.search(r'SUMMARY(?:\s+)?(?:\=|\:)(?:\s+)?([\w\,\-0-9\n\t\s\.\,\(\)\'\"]+)(?:KEYWORDS)?', response).group(1).strip()
     except Exception as exc:
         pass
 

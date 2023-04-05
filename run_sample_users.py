@@ -1,13 +1,9 @@
-import subprocess
+from kgraph import render_html
 
-usernames = ['umairh', 'frank-andrade', 'nikoskafritsas', 'dima806', 'anne.bonfert', 'coachtony',
-             'justdataplease', 'benjaminsledge', 'kozyrkov', 'dariusforoux', 'barackobama']
+usernames = ['justdataplease', 'umairh', 'frank-andrade', 'nikoskafritsas', 'dima806', 'anne.bonfert', 'coachtony',
+             'benjaminsledge', 'kozyrkov', 'dariusforoux', 'barackobama', 'dagster-io', 'MediumStaff', 'towardsdatascience',
+             'mccallisaiah']
 
 for username in usernames:
-    command = f'python kgraph.py -u={username} -l=30 -ai'
-    subprocess.run(command, shell=True)
-
-    command = f'python kgraph.py -u={username} -l=30 -i -ai'
-    subprocess.run(command, shell=True)
-
+    render_html(username=username, articles_limit=30, use_gpt=True, fixed_last_date='2023-04-05')
     print(f"finished with {username}")

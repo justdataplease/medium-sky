@@ -8,9 +8,19 @@ from dotenv import load_dotenv
 import os
 import validators
 from excluded_urls import EXCLUDE_URLS
+import openai
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 # load environment variables from .env file
 load_dotenv()
+
+# Set default values
+DEFAULT_USERNAME = "justdataplease"
+DEFAULT_ARTICLES_LIMIT = 0
+DEFAULT_ISOLATE_ARTICLES = False
+USE_GPT = False
+FIXED_LAST_DATE = os.environ.get('FIXED_LAST_DATE', default=None)
 
 
 def trim_url(url: str) -> str:
@@ -138,14 +148,25 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
             "user_image": user["info"]["image_url"]}
 
 
-if __name__ == "__main__":
-    # Set default values
-    DEFAULT_USERNAME = "justdataplease"
-    DEFAULT_ARTICLES_LIMIT = 0
-    DEFAULT_ISOLATE_ARTICLES = False
-    USE_GPT = False
-    FIXED_LAST_DATE = os.environ.get('FIXED_LAST_DATE', default=None)
+def render_html(username=DEFAULT_USERNAME, isolate_articles=DEFAULT_ARTICLES_LIMIT, articles_limit=DEFAULT_ARTICLES_LIMIT, fixed_last_date=FIXED_LAST_DATE,
+                use_gpt=USE_GPT):
+    dataset = get_links(username, isolate_articles=isolate_articles, articles_limit=articles_limit, fixed_last_date=fixed_last_date, use_gpt=use_gpt)
 
+    # Process template and generate html
+    with open('templates/template.html') as file:
+        template = Template(file.read())
+
+    output_file_name = f'output/{username.replace(".", "_")}_{"i" if isolate_articles else "m"}.html'
+
+    with open(output_file_name, 'w', encoding='utf8') as file:
+        file.write(
+            template.render(data=dataset, user=username,
+                            user_image=dataset["user_image"],
+                            user_profile=dataset["user_profile"],
+                            isolate_articles=isolate_articles))
+
+
+if __name__ == "__main__":
     # Parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--username", default=DEFAULT_USERNAME, help="username to retrieve links for")
@@ -155,17 +176,4 @@ if __name__ == "__main__":
     parser.add_argument("-ai", "--ai", action="store_true", default=USE_GPT, help="use chatgpt to extract keywords and summary")
     args = parser.parse_args()
 
-    dataset = get_links(args.username, isolate_articles=args.isolate, articles_limit=args.limit, fixed_last_date=args.fdate, use_gpt=args.ai)
-
-    # Process template and generate html
-    with open('templates/template.html') as file:
-        template = Template(file.read())
-
-    output_file_name = f'output/{args.username.replace(".", "_")}_{"i" if args.isolate else "m"}.html'
-
-    with open(output_file_name, 'w', encoding='utf8') as file:
-        file.write(
-            template.render(data=dataset, user=args.username,
-                            user_image=dataset["user_image"],
-                            user_profile=dataset["user_profile"],
-                            isolate_articles=args.isolate))
+    render_html(username=args.username, isolate_articles=args.isolate, articles_limit=args.limit, fixed_last_date=args.fdate, use_gpt=args.ai)

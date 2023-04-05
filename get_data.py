@@ -11,10 +11,7 @@ from subprocess import check_output
 import json
 import validators
 from datetime import datetime
-from collections import Counter
-from excluded_urls import EXCLUDE_URLS
 import os
-import openai
 
 # load environment variables from .env file
 load_dotenv()
@@ -24,8 +21,6 @@ FOOTNOTE_LINK_TEXT_RE = re.compile(r'\[([^\]]+)\]\[(\d+)\]')
 FOOTNOTE_LINK_URL_RE = re.compile(r'\[(\d+)\]:\s+(\S+)')
 
 API_URL = "https://medium2.p.rapidapi.com"
-
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 HEADERS = {
     "X-RapidAPI-Key": os.environ.get('RAPID_API'),

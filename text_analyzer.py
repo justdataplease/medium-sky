@@ -283,16 +283,16 @@ def profile_to_text(all_data: dict, profile_stats: dict, fixed_last_date: dateti
         <b>Adj / words</b>: {round(safe_div(pos_stats["adj"], words_all_num) * 100, 1)}% ({pos_stats["adj"]} / {words_all_num})<br>
         <b>Noun / words</b>: {round(safe_div(pos_stats["noun"], words_all_num) * 100, 1)}% ({pos_stats["noun"]} / {words_all_num})<br>
         <br>
-
-        <b>Most Common Words</b>:<br> {counter_to_text(words_counts["most_common_words"])}<br><br>
-        <b>Most Common Bigrams</b>:<br> {counter_to_text(words_counts["most_common_bigrams"])}<br><br>
-        <b>Most Common Trigrams</b>:<br> {counter_to_text(words_counts["most_common_trigrams"])}<br><br>
         
         <b>Most Common ChatGPT Keywords (UPA)</b>:<br> {counter_to_text(chatgpt_words_count)}<br><br>
 
         <b>Most Common Words (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_words"])}<br><br>
         <b>Most Common Bigrams (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_bigrams"])}<br><br>
         <b>Most Common Trigrams (UPA)</b>:<br> {counter_to_text(words_upa_counts["most_common_trigrams"])}<br><br>
+        
+        <b>Most Common Words</b>:<br> {counter_to_text(words_counts["most_common_words"])}<br><br>
+        <b>Most Common Bigrams</b>:<br> {counter_to_text(words_counts["most_common_bigrams"])}<br><br>
+        <b>Most Common Trigrams</b>:<br> {counter_to_text(words_counts["most_common_trigrams"])}<br><br>
         """
 
 

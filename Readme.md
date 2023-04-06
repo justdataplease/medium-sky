@@ -3,9 +3,9 @@
 
 # Analyze your Medium.com articles with Knowledge Graphs and NLP with Medium-Sky
 
-Medium-Sky is a simple open source Python-HTML app that allows you to explore a Medium.com user
+Medium-Sky is a simple open source Python-HTML app that allows you to explore a Medium.com profile
 by analyzing the content of each article, as well as the relationship between the articles and
-their referenced external website domains.
+their referenced external website domains (Medium API, Knowledge Graphs, basic NLP techniques and ChatGPT).
 
 ## Live Demo
 

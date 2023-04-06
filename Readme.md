@@ -29,30 +29,31 @@ Other demo (version 1): <br>
 ## How to Use
 
 To use, you need to do the following actions:
-
-1) You need to subscribe to medium.com api [Rapidapi](https://rapidapi.com/nishujain199719-vgIfuFHZxVZ/api/medium2) (you
+1) Clone GitHub repo <br>
+    `git clone https://github.com/justdataplease/medium-sky.git`
+2) To download Medium articles, subscribe to medium.com api [Rapidapi](https://rapidapi.com/nishujain199719-vgIfuFHZxVZ/api/medium2) (you
    get 150 requests per month for free - if you want to analyze all your articles, this app will work for free if you
    have less than 148 articles).
-2) [OPTIONAL] In order to calculate chatgpt metrics you need to have an account at [Openai](https://platform.openai.com).
-3) Copy paste .env_sample to .env and paste you X-RapidAPI-Key that you will
+3) [OPTIONAL] To calculate ChatGpt metrics you need to have an account at [Openai](https://platform.openai.com).
+4) Copy paste .env_sample to .env and paste you X-RapidAPI-Key that you will
    find [here](https://rapidapi.com/nishujain199719-vgIfuFHZxVZ/api/medium2) and [OPTIONAL] Openai api key that you will find [here](https://platform.openai.com/account/api-keys).
-4) Install requirements <br>
+5) Install requirements. <br>
    `pip install -r requirements.txt`
-5) Run <br>
+6) To get all the articles (without ChatGPT integration) run: <br>
    `python kgraph -u=<username>` <br>
    <br>
-   If you want to use just 10 of your most recent articles run: <br>
+   To get the last 10 of your most recent articles run: <br>
    `python kgraph -u=<username> -l=10` <br>
    <br>
-   If you want to use an isolated knowledge graph (version 2 - Look Documentation), run: <br>
+   To get an isolated knowledge graph (version 2 - Look Documentation), run: <br>
    `python kgraph -u=<username> -l=10 -i`
 
    <br>
    
-   If you want to use Chatgpt to get summary and keywords metrics (Look Documentation), run: <br>
+   To use ChatGpt to get summary and keywords metrics (Look Documentation), run: <br>
    `python kgraph -u=<username> -l=10 -ai`
 
-6) Find the generated HTML in output folder
+7) Find the generated HTML in output folder
    <username>_m.html (mixed or version 1)
    <username>_i.html (-i : isolated or version 2)
 
@@ -69,9 +70,9 @@ then the local file will be used and not Openai API.
 
 ## Metrics Documentation
 
-### Network Graph
+### Knowledge Graph
 
-A network graph is a diagram that shows how different elements (nodes) are related to each other by using lines (edges).
+A Knowledge graph is a diagram that shows how different elements (nodes) are related to each other by using lines (edges).
 In this network graph, we have two types of nodes and one type of edge:
 
 - Star (node) : This represents the main article. The larger the star, the greater the number of voters the article had.

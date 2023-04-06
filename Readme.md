@@ -29,7 +29,7 @@ Other demo (version 1): <br>
 ## How to Use
 
 To use, you need to do the following actions:
-1) Clone GitHub repo <br>
+1) Clone GitHub repo. <br>
     `git clone https://github.com/justdataplease/medium-sky.git`
 2) To download Medium articles, subscribe to medium.com api [Rapidapi](https://rapidapi.com/nishujain199719-vgIfuFHZxVZ/api/medium2) (you
    get 150 requests per month for free - if you want to analyze all your articles, this app will work for free if you

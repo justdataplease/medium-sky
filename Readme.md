@@ -20,9 +20,14 @@ Other demo (version 1): <br>
 [frank-andrader](https://demo.justdataplease.com/products/medium-sky/frank-andrader_m.html) <br>
 [kozyrkov](https://demo.justdataplease.com/products/medium-sky/kozyrkov_m.html) <br>
 [umairh](https://demo.justdataplease.com/products/medium-sky/umairh_m.html) <br>
+[mccallisaiah](https://demo.justdataplease.com/products/medium-sky/mccallisaiah_m.html) <br>
 [anne_bonfert](https://demo.justdataplease.com/products/medium-sky/anne_bonfert_m.html) <br>
 [nikoskafritsas](https://demo.justdataplease.com/products/medium-sky/nikoskafritsas_m.html) <br>
 [dima806](https://demo.justdataplease.com/products/medium-sky/dima806_m.html) <br>
+[MediumStaff](https://demo.justdataplease.com/products/medium-sky/MediumStaff_m.html) <br>
+[towardsdatascience](https://demo.justdataplease.com/products/medium-sky/towardsdatascience_m.html) <br>
+[dagster-io](https://demo.justdataplease.com/products/medium-sky/dagster-io_m.html) <br>
+
 
 
 
@@ -53,7 +58,7 @@ To use, you need to do the following actions:
    To use ChatGpt to get summary and keywords metrics (Look Documentation), run: <br>
    `python kgraph -u=<username> -l=10 -ai`
 
-7) Find the generated HTML in output folder
+7) Find the generated HTML in the output folder
    <username>_m.html (mixed or version 1)
    <username>_i.html (-i : isolated or version 2)
 

@@ -19,8 +19,6 @@ Other demo (version 1): <br>
 [benjaminsledge](https://demo.justdataplease.com/products/medium-sky/benjaminsledge_m.html) <br>
 [frank-andrader](https://demo.justdataplease.com/products/medium-sky/frank-andrader_m.html) <br>
 [kozyrkov](https://demo.justdataplease.com/products/medium-sky/kozyrkov_m.html) <br>
-[umairh](https://demo.justdataplease.com/products/medium-sky/umairh_m.html) <br>
-[mccallisaiah](https://demo.justdataplease.com/products/medium-sky/mccallisaiah_m.html) <br>
 [anne.bonfert](https://demo.justdataplease.com/products/medium-sky/anne_bonfert_m.html) <br>
 [nikoskafritsas](https://demo.justdataplease.com/products/medium-sky/nikoskafritsas_m.html) <br>
 [dima806](https://demo.justdataplease.com/products/medium-sky/dima806_m.html) <br>

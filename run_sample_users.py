@@ -5,5 +5,5 @@ usernames = ['justdataplease', 'umairh', 'frank-andrade', 'nikoskafritsas', 'dim
              'mccallisaiah']
 
 for username in usernames:
-    render_html(username=username, articles_limit=30, use_gpt=True, fixed_last_date='2023-04-05')
+    render_html(username=username, articles_limit=30, use_gpt=True, fixed_last_date='2023-04-05', isolate_articles=True)
     print(f"finished with {username}")

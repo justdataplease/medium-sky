@@ -9,8 +9,8 @@ import os
 import validators
 from excluded_urls import EXCLUDE_URLS
 import openai
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # load environment variables from .env file
 load_dotenv()
@@ -85,6 +85,8 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
 
     # Create nodes for external website domains and connections between them and the articles
     for article in articles:
+        already_found_in_article_index = {}
+
         if isolate_articles:
             already_found_index = {}
 
@@ -110,9 +112,12 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
                     if not found_main_article:
                         if already_found_index.get(domain):
                             id = already_found_index[domain]
-                            dataset[id]["counter"] += 1
-                            if dataset[id]["size"] <= 50:
-                                dataset[id]["size"] += 2
+
+                            if (not already_found_in_article_index.get(domain)) or isolate_articles:
+                                dataset[id]["counter"] += 1
+                                if dataset[id]["size"] <= 50:
+                                    dataset[id]["size"] += 2
+
                             dataset[id]["urls"] = list(set(dataset[id]["urls"] + [description_url]))
                             dataset[id]["label"] = dataset[id]["label"].split("|")[0] + "|" + str(dataset[id]["counter"])
 
@@ -126,6 +131,7 @@ def get_links(user: str, isolate_articles: bool = True, articles_limit: int = 10
                                            "main": 0, "urls": [description_url], "counter": 1}
 
                         already_found_index[domain] = id
+                        already_found_in_article_index[domain] = id
                     else:
                         # If this is a main article (star)
                         id = found_main_article

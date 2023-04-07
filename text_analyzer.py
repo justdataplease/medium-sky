@@ -37,6 +37,11 @@ def pos_tagger(words: list) -> dict:
     return {"adj": num_adjectives, "noun": num_nouns, "verb": num_verbs}
 
 
+def get_day_of_week(date):
+    day_of_week = date.strftime("%A")
+    return day_of_week
+
+
 def text_stemmer(words: list) -> dict:
     stemmer = PorterStemmer()
 
@@ -242,7 +247,7 @@ def profile_to_text(all_data: dict, profile_stats: dict, fixed_last_date: dateti
     publication_count = Counter(profile_stats['publication']).most_common(10)
     published_frequency = find_dates_frequency([x['date'] for x in profile_stats["published_at"]])
     published_time_period_count = Counter([f"{x['time_period'][0]}-{x['time_period'][1]}" for x in profile_stats["published_at"]]).most_common(10)
-    published_day_of_week_count = Counter([f"{x['day_of_week']}" for x in profile_stats["published_at"]]).most_common(10)
+    published_day_of_week_count = Counter([f"{get_day_of_week(x['date'])}" for x in profile_stats["published_at"]]).most_common(10)
     followers = all_data["user"]["info"]["followers_count"]
 
     words_all_num = len(profile_stats["user_words_all"])

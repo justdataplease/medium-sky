@@ -48,7 +48,6 @@ def get_timestamp(timestamp):
     parsed_date = datetime.strptime(timestamp, date_format)
     date = parsed_date.date()
     time = parsed_date.time()
-    day_of_week = parsed_date.strftime("%A")
 
     if time.hour < 5:
         time_period = ("night", "early")
@@ -65,7 +64,7 @@ def get_timestamp(timestamp):
     else:
         time_period = ("evening", "late")
 
-    return {"date": date, "time": time, "time_period": time_period, "day_of_week": day_of_week}
+    return {"date": date, "time": time, "time_period": time_period}
 
 
 def find_md_links(md: str) -> list:

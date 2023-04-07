@@ -41,13 +41,14 @@ def safe_div(x: int, y: int) -> float:
 
 def get_timestamp(timestamp):
     if not timestamp:
-        return {"date": None, "time": None, "time_period": None}
+        return {"date": None, "time": None, "time_period": None, "day_of_week": None}
 
     date_format = "%Y-%m-%dT%H:%M:%S.%fZ"
 
     parsed_date = datetime.strptime(timestamp, date_format)
     date = parsed_date.date()
     time = parsed_date.time()
+    day_of_week = parsed_date.strftime("%A")
 
     if time.hour < 5:
         time_period = ("night", "early")
@@ -64,7 +65,7 @@ def get_timestamp(timestamp):
     else:
         time_period = ("evening", "late")
 
-    return {"date": date, "time": time, "time_period": time_period}
+    return {"date": date, "time": time, "time_period": time_period, "day_of_week": day_of_week}
 
 
 def find_md_links(md: str) -> list:

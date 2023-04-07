@@ -242,6 +242,7 @@ def profile_to_text(all_data: dict, profile_stats: dict, fixed_last_date: dateti
     publication_count = Counter(profile_stats['publication']).most_common(10)
     published_frequency = find_dates_frequency([x['date'] for x in profile_stats["published_at"]])
     published_time_period_count = Counter([f"{x['time_period'][0]}-{x['time_period'][1]}" for x in profile_stats["published_at"]]).most_common(10)
+    published_day_of_week_count = Counter([f"{x['day_of_week']}" for x in profile_stats["published_at"]]).most_common(10)
     followers = all_data["user"]["info"]["followers_count"]
 
     words_all_num = len(profile_stats["user_words_all"])
@@ -269,6 +270,7 @@ def profile_to_text(all_data: dict, profile_stats: dict, fixed_last_date: dateti
         <br>
         
         <b>Preferred Published Time</b>: {counter_to_text(published_time_period_count)} <br>
+        <b>Preferred Published Day</b>: {counter_to_text(published_day_of_week_count)} <br>
         <b>Preferred Article Length (stemmed)</b>: {counter_to_text(article_length_cat)} <br>
         <b>Published Frequency (AVG)</b>: per {round(published_frequency[0], 1)} days ({published_frequency[1]}/{published_frequency[2]}) <br>
         <b>Last Seen </b>: before {days_between(last_date_seen, fixed_last_date)} days<br>

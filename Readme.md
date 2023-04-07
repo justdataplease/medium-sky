@@ -80,7 +80,7 @@ In this network graph, we have two types of nodes and one type of edge:
 - Star (node) : This represents the main article. The larger the star, the greater the number of voters the article had.
   Voters are defined as unique users that clapped or unique claps.
 - Dot or Circle (node) : This represents the external website domain. The larger the dot, the more frequently this
-  domain appeared. Next to domain name there is a number that shows how many times this domain appeared.
+  domain appeared. Next to domain name there is a number that shows how many times this domain appeared. In version 1 frequency refers to unique references in main articles and in version 2 frequency refers to the number of references in an article.
 - Edge (link) - These are the bidirectional links between the stars and dots.
 
 This app provides 2 versions of Network Graphs:

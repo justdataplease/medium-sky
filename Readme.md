@@ -22,9 +22,9 @@ Other demo (version 1): <br>
 [anne.bonfert](https://demo.justdataplease.com/products/medium-sky/anne_bonfert_m.html) <br>
 [nikoskafritsas](https://demo.justdataplease.com/products/medium-sky/nikoskafritsas_m.html) <br>
 [dima806](https://demo.justdataplease.com/products/medium-sky/dima806_m.html) <br>
-[MediumStaff](https://demo.justdataplease.com/products/medium-sky/MediumStaff_m.html) <br>
 [towardsdatascience](https://demo.justdataplease.com/products/medium-sky/towardsdatascience_m.html) <br>
 [dagster-io](https://demo.justdataplease.com/products/medium-sky/dagster-io_m.html) <br>
+[MediumStaff](https://demo.justdataplease.com/products/medium-sky/MediumStaff_m.html) <br>
 
 ## How to Use
 
@@ -123,6 +123,7 @@ first opened.
   words < 100 : "very short" <br>
   words < 300 : "short" <br>
   words < 500 : "normal" <br>
+  words < 500 : "medium" <br>
   words < 1800 : "large" <br>
   words > 1800 : "very large" <br>
 

@@ -12,6 +12,7 @@ their referenced external website domains (Medium API, Knowledge Graphs, basic N
 Checkout [demo](https://demo.justdataplease.com/products/medium-sky/justdataplease_m.html) (version 1)
 or [demo](https://demo.justdataplease.com/products/medium-sky/justdataplease_i.html) (version 2)
 
+
 Other demo (version 1): <br>
 [barackobama](https://demo.justdataplease.com/products/medium-sky/barackobama_m.html) <br>
 [coachtony](https://demo.justdataplease.com/products/medium-sky/coachtony_m.html) <br>

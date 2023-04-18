@@ -17,7 +17,7 @@ Other demo (version 1): <br>
 [coachtony](https://demo.justdataplease.com/products/medium-sky/coachtony_m.html) <br>
 [dariusforoux](https://demo.justdataplease.com/products/medium-sky/dariusforoux_m.html) <br>
 [benjaminsledge](https://demo.justdataplease.com/products/medium-sky/benjaminsledge_m.html) <br>
-[frank-andrader](https://demo.justdataplease.com/products/medium-sky/frank-andrader_m.html) <br>
+[frank-andrade](https://demo.justdataplease.com/products/medium-sky/frank-andrade_m.html) <br>
 [kozyrkov](https://demo.justdataplease.com/products/medium-sky/kozyrkov_m.html) <br>
 [anne.bonfert](https://demo.justdataplease.com/products/medium-sky/anne_bonfert_m.html) <br>
 [nikoskafritsas](https://demo.justdataplease.com/products/medium-sky/nikoskafritsas_m.html) <br>

@@ -11,23 +11,11 @@ Read full article at [Medium.com](https://medium.com/geekculture/explore-your-me
 
 ## Live Demo
 
-Checkout [demo](https://demo.justdataplease.com/products/medium-sky/justdataplease_m.html) (version 1)
-or [demo](https://demo.justdataplease.com/products/medium-sky/justdataplease_i.html) (version 2)
+Checkout [demo](https://justdataplease.com/medium-sky/justdataplease.html) (version 1)
 
-
-Other demo (version 1): <br>
-[barackobama](https://demo.justdataplease.com/products/medium-sky/barackobama_m.html) <br>
-[coachtony](https://demo.justdataplease.com/products/medium-sky/coachtony_m.html) <br>
-[dariusforoux](https://demo.justdataplease.com/products/medium-sky/dariusforoux_m.html) <br>
-[benjaminsledge](https://demo.justdataplease.com/products/medium-sky/benjaminsledge_m.html) <br>
-[frank-andrade](https://demo.justdataplease.com/products/medium-sky/frank-andrade_m.html) <br>
-[kozyrkov](https://demo.justdataplease.com/products/medium-sky/kozyrkov_m.html) <br>
-[anne.bonfert](https://demo.justdataplease.com/products/medium-sky/anne_bonfert_m.html) <br>
-[nikoskafritsas](https://demo.justdataplease.com/products/medium-sky/nikoskafritsas_m.html) <br>
-[dima806](https://demo.justdataplease.com/products/medium-sky/dima806_m.html) <br>
-[towardsdatascience](https://demo.justdataplease.com/products/medium-sky/towardsdatascience_m.html) <br>
-[dagster-io](https://demo.justdataplease.com/products/medium-sky/dagster-io_m.html) <br>
-[MediumStaff](https://demo.justdataplease.com/products/medium-sky/MediumStaff_m.html) <br>
+Other demo: <br>
+[barackobama v1 - mixed](https://storage.googleapis.com/medium-sky/barackobama_m.html) <br>
+[barackobama v2 - isolated](https://storage.googleapis.com/medium-sky/barackobama_i.html) <br>
 
 ## How to Use
 
